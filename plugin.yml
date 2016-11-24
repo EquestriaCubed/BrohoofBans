@@ -1,0 +1,49 @@
+name: BrohoofBans
+main: com.brohoof.brohoofbans.BrohoofBansPlugin
+version: 1
+authors: [SweetieBelle]
+description: >
+             Bans players and other stuff
+commands:
+   ban:
+      description: Bans a player
+      usage: /ban [-t] [time] <player|UUID> <reason...>
+   kick:
+      description: Kicks a player
+      usage: /kick <player|UUID> <reason...>
+   baninfo:
+      description: Gets information about a ban.
+      usage: /baninfo [-i] <player|UUID>
+   isbanned:
+      description: Is a player banned?
+      usage: /isbanned <player|UUID>
+   unban:
+      description: Unbans a player
+      usage: /unban <player|UUID>
+   suspend:
+      description: Kicks a player
+      usage: /suspend <player|UUID> <reason...>
+   brohoofbans:
+      description: Unbans a player
+      usage: /brohoofbans <reload>
+permissions:
+    brohoofbans.ban:
+      description: Allows usage of /ban
+    brohoofbans.kick:
+      description: Allows usage of /kick
+    brohoofbans.baninfo.*:
+      children:
+        brohoofbans.baninfo: true
+        brohoofbans.baninfo.admin: true
+    brohoofbans.baninfo:
+      description: Allows usage of /baninfo
+    brohoofbans.baninfo.admin:
+      description: Allows usage of /baninfo -i
+    brohoofbans.isbanned:
+      description: Allows usage of /isbanned
+    brohoofbans.unban:
+      description: Allows usage of /unban
+    brohoofbans.suspend:
+      description: Allows usage of /suspend
+    brohoofbans.reload:
+      description: Allows usage of /brohoofbans reload
