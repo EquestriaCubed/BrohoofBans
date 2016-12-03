@@ -78,7 +78,7 @@ public class Data {
      */
     private int executeQuery(final String query) throws SQLException {
         if (connection == null || connection.isClosed()) {
-            final String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase);
+            final String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase + "?autoReconnect=true&useSSL=false");
             connection = DriverManager.getConnection(connect, s.dbUser, s.dbPass);
             p.getLogger().info("Connecting to " + s.dbUser + "@" + connect + "...");
         }
@@ -90,12 +90,12 @@ public class Data {
     void forceConnectionRefresh() {
         try {
             if (connection == null || connection.isClosed()) {
-                final String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase);
+                final String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase + "?autoReconnect=true&useSSL=false");
                 connection = DriverManager.getConnection(connect, s.dbUser, s.dbPass);
                 p.getLogger().info("Connecting to " + s.dbUser + "@" + connect + "...");
             } else {
                 connection.close();
-                final String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase);
+                final String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase + "?autoReconnect=true&useSSL=false");
                 connection = DriverManager.getConnection(connect, s.dbUser, s.dbPass);
                 p.getLogger().info("Connecting to " + s.dbUser + "@" + connect + "...");
             }
@@ -183,7 +183,7 @@ public class Data {
      */
     private ResultSet getResultSet(final String query) throws SQLException {
         if (connection == null || connection.isClosed()) {
-            final String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase);
+            final String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase + "?autoReconnect=true&useSSL=false");
             connection = DriverManager.getConnection(connect, s.dbUser, s.dbPass);
             p.getLogger().info("Connecting to " + s.dbUser + "@" + connect + "...");
         }
