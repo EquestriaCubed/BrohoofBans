@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,7 +13,7 @@ import org.bukkit.entity.Player;
 
 class CommandHandler implements CommandExecutor {
     private final static UUID consoleUUID = UUID.fromString("3c879ef9-95c2-44d1-98f9-2824610477c8");
-    private final static String noPermission = "§cYou do not have permission.";
+    private final static String noPermission = ChatColor.RED + "You do not have permission.";
     private final ExpireConverter c;
     private final Data d;
     private final BrohoofBansPlugin p;
@@ -102,7 +103,7 @@ class CommandHandler implements CommandExecutor {
                 }
                 d.forceConnectionRefresh();
                 s.reloadSettings();
-                sender.sendMessage("§e[BrohoofBans] Config reloaded.");
+                sender.sendMessage(ChatColor.YELLOW + "[BrohoofBans] Config reloaded.");
                 return true;
             }
             return false;
@@ -123,7 +124,7 @@ class CommandHandler implements CommandExecutor {
                     isTemporary = true;
                 } catch (final CommandException e) {
                     d.error(e);
-                    sender.sendMessage("§cThat is not a valid time format. §f1h-5m §cis a valid format.");
+                    sender.sendMessage(ChatColor.RED + "That is not a valid time format. " + ChatColor.WHITE + "1h-5m " + ChatColor.RED + "is a valid format.");
                     return true;
                 }
             if (isTemporary && args.length <= 3)
@@ -138,7 +139,7 @@ class CommandHandler implements CommandExecutor {
                     final Ban b = new Ban(victim.getUniqueId(), executor.getUniqueId(), victim.getName(), executor.getName(), getIP(victim.getAddress()), getIP(executor.getAddress()), expires, reason, false);
                     victim.kickPlayer(reason);
                     p.getLogger().info(b.toString());
-                    Bukkit.broadcastMessage("§eBanned " + b.getVictimName() + " for " + b.getReason());
+                    Bukkit.broadcastMessage("" + ChatColor.YELLOW + "Banned " + b.getVictimName() + " for " + b.getReason());
                     d.saveBan(b);
                     return true;
                 }
@@ -146,7 +147,7 @@ class CommandHandler implements CommandExecutor {
                 final Ban b = new Ban(victim.getUniqueId(), consoleUUID, victim.getName(), "CONSOLE", getIP(victim.getAddress()), "::1", expires, reason, false);
                 p.getLogger().info(b.toString());
                 victim.kickPlayer(reason);
-                Bukkit.broadcastMessage("§eBanned " + b.getVictimName() + " for " + b.getReason());
+                Bukkit.broadcastMessage("" + ChatColor.YELLOW + "Banned " + b.getVictimName() + " for " + b.getReason());
                 d.saveBan(b);
                 return true;
             }
@@ -159,14 +160,14 @@ class CommandHandler implements CommandExecutor {
                 final Ban b = new Ban(victim.getUniqueId(), executor.getUniqueId(), victim.getName(), executor.getName(), "NULL", getIP(executor.getAddress()), expires, reason, false);
                 p.getLogger().info(b.toString());
                 d.saveBan(b);
-                Bukkit.broadcastMessage("§eBanned " + b.getVictimName() + " for " + b.getReason());
+                Bukkit.broadcastMessage("" + ChatColor.YELLOW + "Banned " + b.getVictimName() + " for " + b.getReason());
                 return true;
             }
             // It's console
             final Ban b = new Ban(victim.getUniqueId(), consoleUUID, victim.getName(), "CONSOLE", "NULL", "::1", expires, reason, false);
             p.getLogger().info(b.toString());
             d.saveBan(b);
-            Bukkit.broadcastMessage("§eBanned " + b.getVictimName() + " for " + b.getReason());
+            Bukkit.broadcastMessage("" + ChatColor.YELLOW + "Banned " + b.getVictimName() + " for " + b.getReason());
             return true;
         }
         if (command.getName().equalsIgnoreCase("kick")) {
@@ -182,12 +183,12 @@ class CommandHandler implements CommandExecutor {
                 victim = (Player) getPlayer(args[0]);
             } catch (final ClassCastException e) {
                 d.error(e);
-                sender.sendMessage("§cThat player is not online.");
+                sender.sendMessage("" + ChatColor.RED + "That player is not online.");
                 return true;
             }
             final String reason = getReason(args, false);
             victim.kickPlayer(reason);
-            Bukkit.broadcastMessage("§eKicked " + victim.getName() + " for " + reason);
+            Bukkit.broadcastMessage("" + ChatColor.YELLOW + "Kicked " + victim.getName() + " for " + reason);
             if (sender instanceof Player)
                 p.getLogger().info("Player " + ((Player) sender).getName() + " kicked " + victim.getName() + " for " + reason + ".");
             else
@@ -210,46 +211,46 @@ class CommandHandler implements CommandExecutor {
                 final Ban b = fromString(args[1]);
                 if (b == null) {
                     // No ban
-                    sender.sendMessage("§e" + getPlayer(args[1]).getName() + " is §cnot §e banned.");
+                    sender.sendMessage(ChatColor.YELLOW + getPlayer(args[1]).getName() + " is " + ChatColor.RED + "not " + ChatColor.YELLOW + "banned.");
                     return true;
                 }
                 if (b.isSuspension()) {
-                    sender.sendMessage("§e" + b.getVictimName() + " §cis §esuspended.");
-                    sender.sendMessage("§eVictim UUID is " + b.getVictim().toString() + ". Their name is " + b.getVictimName());
-                    sender.sendMessage("§eIssuer UUID is " + b.getExecutor().toString() + ". Their name is " + b.getExecutorName());
-                    sender.sendMessage("§eThe Victim is suspended for §f" + b.getReason());
-                    sender.sendMessage("§eThe Issuer's IP is " + b.getExecutorIP() + ". The Victim's IP is " + b.getVictimIP());
+                    sender.sendMessage(ChatColor.YELLOW + b.getVictimName() + ChatColor.RED + "is " + ChatColor.YELLOW + "suspended.");
+                    sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + b.getVictim().toString() + ". Their name is " + b.getVictimName());
+                    sender.sendMessage(ChatColor.YELLOW + "Issuer UUID is " + b.getExecutor().toString() + ". Their name is " + b.getExecutorName());
+                    sender.sendMessage(ChatColor.YELLOW + "The Victim is suspended for " + ChatColor.WHITE + b.getReason());
+                    sender.sendMessage(ChatColor.YELLOW + "The Issuer's IP is " + b.getExecutorIP() + ". The Victim's IP is " + b.getVictimIP());
                     return true;
                 }
-                sender.sendMessage("§e" + b.getVictimName() + " §cis §ebanned.");
-                sender.sendMessage("§eVictim UUID is " + b.getVictim().toString() + ". Their name is " + b.getVictimName());
-                sender.sendMessage("§eIssuer UUID is " + b.getExecutor().toString() + ". Their name is " + b.getExecutorName());
-                sender.sendMessage("§eThe Issuer's IP is " + b.getExecutorIP() + ". The Victim's IP is " + b.getVictimIP());
+                sender.sendMessage(ChatColor.YELLOW + b.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "banned.");
+                sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + b.getVictim().toString() + ". Their name is " + b.getVictimName());
+                sender.sendMessage(ChatColor.YELLOW + "Issuer UUID is " + b.getExecutor().toString() + ". Their name is " + b.getExecutorName());
+                sender.sendMessage(ChatColor.YELLOW + "The Issuer's IP is " + b.getExecutorIP() + ". The Victim's IP is " + b.getVictimIP());
                 if (b.getExpires().equalsIgnoreCase("NEVER"))
-                    sender.sendMessage("§eThe Victim is banned for §f" + b.getReason() + "§e. This ban does §cnot §eexpire.");
+                    sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + b.getReason() + ChatColor.YELLOW + ". This ban does " + ChatColor.RED + "not " + ChatColor.YELLOW + "expire.");
                 else
-                    sender.sendMessage("§eThe Victim is banned for §f" + b.getReason() + "§e. This ban expires at §f" + c.getFriendlyTime(Long.parseLong(b.getExpires())));
+                    sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + b.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + c.getFriendlyTime(Long.parseLong(b.getExpires())));
                 return true;
             }
             // Not a -i
             final Ban b = fromString(args[0]);
             if (b == null) {
                 // No ban
-                sender.sendMessage("§e" + getPlayer(args[0]).getName() + " is §cnot §ebanned.");
+                sender.sendMessage(ChatColor.YELLOW + getPlayer(args[0]).getName() + " is " + ChatColor.RED + "not " + ChatColor.YELLOW + "banned.");
                 return true;
             }
             if (b.isSuspension()) {
-                sender.sendMessage("§e" + b.getVictimName() + " §cis §esuspended.");
-                sender.sendMessage("§eVictim UUID is " + b.getVictim().toString() + ". Their name is " + b.getVictimName());
-                sender.sendMessage("§eThe Victim is suspended for §f" + b.getReason());
+                sender.sendMessage(ChatColor.YELLOW + b.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "suspended.");
+                sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + b.getVictim().toString() + ". Their name is " + b.getVictimName());
+                sender.sendMessage(ChatColor.YELLOW + "The Victim is suspended for " + ChatColor.WHITE + b.getReason());
                 return true;
             }
-            sender.sendMessage("§e" + b.getVictimName() + " §cis §ebanned.");
-            sender.sendMessage("§eVictim UUID is " + b.getVictim().toString() + ". Their name is " + b.getVictimName());
+            sender.sendMessage(ChatColor.YELLOW + b.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "banned.");
+            sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + b.getVictim().toString() + ". Their name is " + b.getVictimName());
             if (b.getExpires().equalsIgnoreCase("NEVER"))
-                sender.sendMessage("§eThe Victim is banned for §f" + b.getReason() + "§e. This ban does §cnot §eexpire.");
+                sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + b.getReason() + ChatColor.YELLOW + ". This ban does " + ChatColor.RED + "not " + ChatColor.YELLOW + "expire.");
             else
-                sender.sendMessage("§eThe Victim is banned for §f" + b.getReason() + "§e. This ban expires at §f" + c.getFriendlyTime(Long.parseLong(b.getExpires())));
+                sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + b.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + c.getFriendlyTime(Long.parseLong(b.getExpires())));
             return true;
         }
         if (command.getName().equalsIgnoreCase("isbanned")) {
@@ -262,14 +263,14 @@ class CommandHandler implements CommandExecutor {
             }
             final Ban b = fromString(args[0]);
             if (b == null) {
-                sender.sendMessage("§e" + getPlayer(args[0]).getName() + " is §cnot §e banned.");
+                sender.sendMessage(ChatColor.YELLOW + getPlayer(args[0]).getName() + " is " + ChatColor.RED + "not " + ChatColor.YELLOW + " banned.");
                 return true;
             }
             if (b.isSuspension()) {
-                sender.sendMessage("§e" + b.getVictimName() + " §cis §esuspended.");
+                sender.sendMessage(ChatColor.YELLOW + b.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "suspended.");
                 return true;
             }
-            sender.sendMessage("§e" + b.getVictimName() + " §cis §ebanned.");
+            sender.sendMessage(ChatColor.YELLOW + b.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "banned.");
             return true;
         }
         if (command.getName().equalsIgnoreCase("unban")) {
@@ -282,11 +283,11 @@ class CommandHandler implements CommandExecutor {
             }
             final Ban b = fromString(args[0]);
             if (b == null) {
-                sender.sendMessage("§c" + getPlayer(args[0]).getName() + " is not banned.");
+                sender.sendMessage("" + ChatColor.RED + getPlayer(args[0]).getName() + " is not banned.");
                 return true;
             }
             d.unban(b);
-            sender.sendMessage("§e" + b.getVictimName() + " unbanned.");
+            sender.sendMessage(ChatColor.YELLOW + b.getVictimName() + " unbanned.");
             return true;
         }
         if (command.getName().equalsIgnoreCase("suspend")) {
@@ -308,7 +309,7 @@ class CommandHandler implements CommandExecutor {
                     victim.kickPlayer(s.suspendReason);
                     p.getLogger().info(b.toString());
                     d.saveBan(b);
-                    Bukkit.broadcastMessage("§eSuspended " + b.getVictimName() + " for " + b.getReason());
+                    Bukkit.broadcastMessage(ChatColor.YELLOW + "Suspended " + b.getVictimName() + " for " + b.getReason());
                     return true;
                 }
                 // It's console
@@ -316,7 +317,7 @@ class CommandHandler implements CommandExecutor {
                 p.getLogger().info(b.toString());
                 victim.kickPlayer(s.suspendReason);
                 d.saveBan(b);
-                Bukkit.broadcastMessage("§eSuspended " + b.getVictimName() + " for " + b.getReason());
+                Bukkit.broadcastMessage(ChatColor.YELLOW + "Suspended " + b.getVictimName() + " for " + b.getReason());
                 return true;
             }
             // Offline player
@@ -328,14 +329,14 @@ class CommandHandler implements CommandExecutor {
                 final Ban b = new Ban(victim.getUniqueId(), executor.getUniqueId(), victim.getName(), executor.getName(), "NULL", getIP(executor.getAddress()), "NEVER", reason, true);
                 p.getLogger().info(b.toString());
                 d.saveBan(b);
-                Bukkit.broadcastMessage("§eSuspended " + b.getVictimName() + " for " + b.getReason());
+                Bukkit.broadcastMessage(ChatColor.YELLOW + "Suspended " + b.getVictimName() + " for " + b.getReason());
                 return true;
             }
             // It's console
             final Ban b = new Ban(victim.getUniqueId(), consoleUUID, victim.getName(), "CONSOLE", "NULL", "::1", "NEVER", reason, true);
             p.getLogger().info(b.toString());
             d.saveBan(b);
-            Bukkit.broadcastMessage("§eSuspended " + b.getVictimName() + " for " + b.getReason());
+            Bukkit.broadcastMessage(ChatColor.YELLOW + "Suspended " + b.getVictimName() + " for " + b.getReason());
             return true;
         }
         return false;

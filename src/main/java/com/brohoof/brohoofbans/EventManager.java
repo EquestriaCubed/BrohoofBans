@@ -2,6 +2,7 @@ package com.brohoof.brohoofbans;
 
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -38,7 +39,7 @@ class EventManager implements Listener {
                 pEvent.disallow(Result.KICK_BANNED, b.getReason());
                 return;
             }
-            pEvent.disallow(Result.KICK_BANNED, b.getReason() + ". \n§cExpires at §f" + c.getFriendlyTime(Long.parseLong(b.getExpires())) + ".");
+            pEvent.disallow(Result.KICK_BANNED, b.getReason() + ". \n" + ChatColor.RED + "Expires at " + ChatColor.WHITE + c.getFriendlyTime(Long.parseLong(b.getExpires())) + ".");
             return;
         }
     }
