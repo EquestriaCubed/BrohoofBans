@@ -239,6 +239,7 @@ public class Data {
                 update.setString(7, b.getExpires());
                 update.setString(8, b.getReason());
                 update.executeQuery();
+                update.close();
                 return;
             }
             PreparedStatement update = connection.prepareStatement(String.format("INSERT INTO %sban (victimUUID, victimName, victimIP, executorUUID, executorName, executorIP, isSuspension, expires, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", s.dbPrefix));
@@ -252,6 +253,7 @@ public class Data {
             update.setString(8, b.getExpires());
             update.setString(9, b.getReason());
             update.executeQuery();
+            update.close();
             return;
         } catch (final SQLException e) {
             error(e);
