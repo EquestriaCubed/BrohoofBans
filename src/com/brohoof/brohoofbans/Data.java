@@ -2,6 +2,7 @@ package com.brohoof.brohoofbans;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -227,14 +228,30 @@ public class Data {
     void saveBan(final Ban b) {
         try {
             if (isBanned(b.getVictim())) {
-                executeQuery("UPDATE " + s.dbPrefix + "ban SET victimName = \"" + b.getVictimName() + "\", victimIP = \"" + 
-            b.getVictimIP() + "\", executorUUID = \"" + b.getExecutor().toString() + "\", executorName = \"" + 
-                        b.getExecutorName() + "\", executorIP = \"" + b.getExecutorIP() + 
-                        "\", isSuspension = \"" + (b.isSuspension() ? 1 : 0) + "\", expires = \"" 
-                        + b.getExpires() + "\", reason = \"" + b.getReason() + "\" WHERE victimUUID = \"" + b.getVictim().toString() + "\";");
+                PreparedStatement update = connection.prepareStatement(String.format("UPDATE %sban SET victimName = ?, victimIP = ?, executorUUID = ?, "
+                        + "executorName = ?, executorIP = ?, isSuspension = ?, expires = ?, reason = ? WHERE victimUUID = ?;", s.dbPrefix));
+                update.setString(1, b.getVictimName());
+                update.setString(2, b.getVictimIP());
+                update.setString(3, b.getExecutor().toString());
+                update.setString(4, b.getExecutorName());
+                update.setString(5, b.getExecutorIP());
+                update.setBoolean(6, b.isSuspension());
+                update.setString(7, b.getExpires());
+                update.setString(8, b.getReason());
+                update.executeQuery();
                 return;
             }
-            executeQuery("INSERT INTO " + s.dbPrefix + "ban (victimUUID, victimName, victimIP, executorUUID, executorName, executorIP, isSuspension, expires, reason) VALUES (\"" + b.getVictim().toString() + "\", \"" + b.getVictimName() + "\", \"" + b.getVictimIP() + "\", \"" + b.getExecutor().toString() + "\", \"" + b.getExecutorName() + "\", \"" + b.getExecutorIP() + "\", \"" + (b.isSuspension() ? 1 : 0) + "\", \"" + b.getExpires() + "\", \"" + b.getReason() + "\");");
+            PreparedStatement update = connection.prepareStatement(String.format("INSERT INTO %sban (victimUUID, victimName, victimIP, executorUUID, executorName, executorIP, isSuspension, expires, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", s.dbPrefix));
+            update.setString(1, b.getVictim().toString());
+            update.setString(2, b.getVictimName());
+            update.setString(3, b.getVictimIP());
+            update.setString(4, b.getExecutor().toString());
+            update.setString(5, b.getExecutorName());
+            update.setString(6, b.getExecutorIP());
+            update.setBoolean(7, b.isSuspension());
+            update.setString(8, b.getExpires());
+            update.setString(9, b.getReason());
+            update.executeQuery();
             return;
         } catch (final SQLException e) {
             error(e);
