@@ -1,6 +1,6 @@
 name: BrohoofBans
 main: com.brohoof.brohoofbans.BrohoofBansPlugin
-version: 3
+version: $version
 authors: [SweetieBelle]
 description: >
              Bans players and other stuff

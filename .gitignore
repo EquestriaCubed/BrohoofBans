@@ -60,3 +60,7 @@ local.properties
 .settings/
 .loadpath
 *.class
+
+#Gradle
+.gradle/
+build/
