@@ -238,7 +238,8 @@ public class Data {
                 update.setBoolean(6, b.isSuspension());
                 update.setString(7, b.getExpires());
                 update.setString(8, b.getReason());
-                update.executeQuery();
+                update.setString(9, b.getVictim().toString());
+                update.executeUpdate();
                 update.close();
                 return;
             }
@@ -252,7 +253,7 @@ public class Data {
             update.setBoolean(7, b.isSuspension());
             update.setString(8, b.getExpires());
             update.setString(9, b.getReason());
-            update.executeQuery();
+            update.executeUpdate();
             update.close();
             return;
         } catch (final SQLException e) {
