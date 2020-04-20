@@ -4,6 +4,7 @@ version: $version
 authors: [SweetieBelle]
 description: >
              Bans players and other stuff
+api-version: 1.15
 commands:
    ban:
       description: Bans a player

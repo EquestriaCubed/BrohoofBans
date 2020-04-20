@@ -5,16 +5,18 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
 public class Data {
+
     private Connection connection;
     private final BrohoofBansPlugin p;
     private final Settings s;
 
-    Data(final BrohoofBansPlugin p, final Settings s) {
+    public Data(final BrohoofBansPlugin p, final Settings s) {
         this.s = s;
         this.p = p;
         createTables();
@@ -46,7 +48,7 @@ public class Data {
      * @param e
      *            Exception
      */
-    void error(final Exception e) {
+    public void error(final Exception e) {
         if (s.stackTraces) {
             e.printStackTrace();
             return;
@@ -65,6 +67,16 @@ public class Data {
             return;
         p.getLogger().severe("Unhandled Exception " + e.getCause() + ": " + e.getMessage());
         e.printStackTrace();
+    }
+    /**
+     * Checks if a player is banned or not.
+     * @deprecated use {@link #getBan(UUID)} which returns a {@link java.util.Optional} to determine if a ban exists.
+     * @param uuid the UUID of the player to check
+     * @return if they are banned or not
+     */
+    @Deprecated
+    public boolean isBanned(UUID uuid) { 
+        return getBan(uuid).isPresent();
     }
 
     /**
@@ -88,7 +100,7 @@ public class Data {
         return connection.createStatement().executeUpdate(query);
     }
 
-    void forceConnectionRefresh() {
+    public void forceConnectionRefresh() {
         try {
             if (connection == null || connection.isClosed()) {
                 final String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase + "?autoReconnect=true&useSSL=false");
@@ -105,7 +117,7 @@ public class Data {
         }
     }
 
-    Ban getBan(final String playername) {
+    public Optional<Ban> getBan(final String playername) {
         String executorIP;
         String executorName;
         UUID executorUUID;
@@ -115,8 +127,6 @@ public class Data {
         String victimIP;
         UUID victimUUID;
         boolean isSuspended;
-        if (!isBanned(playername))
-            return null;
         try {
             final ResultSet rs = getResultSet("SELECT * FROM " + s.dbPrefix + "ban WHERE victimName = \"" + playername + "\";");
             if (rs.next()) {
@@ -130,16 +140,16 @@ public class Data {
                 victimIP = rs.getString("victimIP");
                 isSuspended = rs.getBoolean("isSuspension");
                 rs.close();
-                return new Ban(victimUUID, executorUUID, victimName, executorName, victimIP, executorIP, expiresIn, reason, isSuspended);
+                Optional.<Ban>of(new Ban(victimUUID, executorUUID, victimName, executorName, victimIP, executorIP, expiresIn, reason, isSuspended));
             }
-            return null;
+            return Optional.empty();
         } catch (final SQLException e) {
             error(e);
-            return null;
+            return Optional.empty();
         }
     }
 
-    Ban getBan(final UUID uuid) {
+    public Optional<Ban> getBan(final UUID uuid) {
         String executorIP;
         String executorName;
         UUID executorUUID;
@@ -149,8 +159,6 @@ public class Data {
         String victimIP;
         UUID victimUUID;
         boolean isSuspended;
-        if (!isBanned(uuid))
-            return null;
         try {
             final ResultSet rs = getResultSet("SELECT * FROM " + s.dbPrefix + "ban WHERE victimUUID = \"" + uuid.toString() + "\";");
             if (rs.next()) {
@@ -164,12 +172,12 @@ public class Data {
                 victimIP = rs.getString("victimIP");
                 isSuspended = rs.getBoolean("isSuspension");
                 rs.close();
-                return new Ban(victimUUID, executorUUID, victimName, executorName, victimIP, executorIP, expiresIn, reason, isSuspended);
+                return Optional.of(new Ban(victimUUID, executorUUID, victimName, executorName, victimIP, executorIP, expiresIn, reason, isSuspended));
             }
-            return null;
+            return Optional.empty();
         } catch (final SQLException e) {
             error(e);
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -193,43 +201,10 @@ public class Data {
         return connection.createStatement().executeQuery(query);
     }
 
-    public boolean isBanned(final String playername) {
+    public void saveBan(final Ban b) {
         try {
-            final ResultSet rs = getResultSet("SELECT * FROM " + s.dbPrefix + "ban WHERE victimName = \"" + playername + "\";");
-            return rs.next();
-        } catch (final SQLException e) {
-            error(e);
-            return false;
-        }
-    }
-
-    public boolean isBanned(final UUID id) {
-        try {
-            final ResultSet rs = getResultSet("SELECT * FROM " + s.dbPrefix + "ban WHERE victimUUID = \"" + id.toString() + "\";");
-            return rs.next();
-        } catch (final SQLException e) {
-            error(e);
-            return false;
-        }
-    }
-
-    boolean isSuspended(final UUID uuid) {
-        try {
-            final ResultSet rs = getResultSet("SELECT * FROM " + s.dbPrefix + "ban WHERE victimUUID = \"" + uuid.toString() + "\";");
-            if (rs.next())
-                return rs.getBoolean("isSuspended");
-            return false;
-        } catch (final SQLException e) {
-            error(e);
-            return false;
-        }
-    }
-
-    void saveBan(final Ban b) {
-        try {
-            if (isBanned(b.getVictim())) {
-                PreparedStatement update = connection.prepareStatement(String.format("UPDATE %sban SET victimName = ?, victimIP = ?, executorUUID = ?, "
-                        + "executorName = ?, executorIP = ?, isSuspension = ?, expires = ?, reason = ? WHERE victimUUID = ?;", s.dbPrefix));
+            if (this.getBan(b.getVictim()).isPresent()) {
+                PreparedStatement update = connection.prepareStatement(String.format("UPDATE %sban SET victimName = ?, victimIP = ?, executorUUID = ?, " + "executorName = ?, executorIP = ?, isSuspension = ?, expires = ?, reason = ? WHERE victimUUID = ?;", s.dbPrefix));
                 update.setString(1, b.getVictimName());
                 update.setString(2, b.getVictimIP());
                 update.setString(3, b.getExecutor().toString());
@@ -273,7 +248,7 @@ public class Data {
         return false;
     }
 
-    void unban(final Ban b) {
+    public void unban(final Ban b) {
         try {
             executeQuery("DELETE FROM " + s.dbPrefix + "ban WHERE victimUUID = \"" + b.getVictim().toString() + "\";");
         } catch (final SQLException e) {
@@ -281,7 +256,7 @@ public class Data {
         }
     }
 
-    void updateBans(final Player victimOrExecutor) {
+    public void updateBans(final Player victimOrExecutor) {
         try {
             executeQuery("UPDATE " + s.dbPrefix + "ban SET victimName = \"" + victimOrExecutor.getName() + "\" WHERE victimUUID = \"" + victimOrExecutor.getUniqueId().toString() + "\";");
             executeQuery("UPDATE " + s.dbPrefix + "ban SET executorName = \"" + victimOrExecutor.getName() + "\" WHERE executorUUID = \"" + victimOrExecutor.getUniqueId().toString() + "\";");

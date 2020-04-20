@@ -2,6 +2,7 @@ general:
   printStackTraces: true
   suspendReason: You broke the rules and were suspended!\nFind the forum called Suspensions and look for the post with your name.
   showQueries: true
+  broadcastMessage: true
 database:
   username: minecraft
   password: minecraft

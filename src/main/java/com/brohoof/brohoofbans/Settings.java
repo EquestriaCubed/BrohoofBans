@@ -2,19 +2,21 @@ package com.brohoof.brohoofbans;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-class Settings {
-    String dbDatabase;
-    String dbHost;
-    String dbPass;
-    String dbPort;
-    String dbPrefix;
-    String dbUser;
-    private final BrohoofBansPlugin plugin;
-    boolean stackTraces;
-    String suspendReason;
-    boolean showQueries;
+public class Settings {
 
-    Settings(final BrohoofBansPlugin plugin) {
+    public String dbDatabase;
+    public String dbHost;
+    public String dbPass;
+    public String dbPort;
+    public String dbPrefix;
+    public String dbUser;
+    private final BrohoofBansPlugin plugin;
+    public boolean stackTraces;
+    public String suspendReason;
+    public boolean showQueries;
+    public boolean broadcastMessage;
+
+    public Settings(final BrohoofBansPlugin plugin) {
         this.plugin = plugin;
         readSettings(plugin.getConfig());
     }
@@ -28,6 +30,7 @@ class Settings {
         stackTraces = config.getBoolean("general.printStackTraces");
         suspendReason = config.getString("general.suspendReason");
         showQueries = config.getBoolean("general.showQueries");
+        broadcastMessage = config.getBoolean("general.broadcastMessage");
         dbHost = config.getString("database.host");
         dbPort = config.getString("database.port");
         dbUser = config.getString("database.username");
@@ -39,7 +42,7 @@ class Settings {
     /**
      * Reloads settings
      */
-    void reloadSettings() {
+    public void reloadSettings() {
         plugin.reloadConfig();
         readSettings(plugin.getConfig());
     }

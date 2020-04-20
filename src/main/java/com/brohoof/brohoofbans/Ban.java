@@ -2,7 +2,8 @@ package com.brohoof.brohoofbans;
 
 import java.util.UUID;
 
-class Ban {
+public class Ban {
+
     private final String executorIP;
     private final String executorName;
     private final UUID executorUUID;
@@ -25,7 +26,7 @@ class Ban {
      * @param reason
      * @param isSuspension
      */
-    Ban(final UUID victimUUID, final UUID executorUUID, final String victimName, final String executorName, final String victimIP, final String executorIP, final String expiresIn, final String reason, final boolean isSuspension) {
+    public Ban(final UUID victimUUID, final UUID executorUUID, final String victimName, final String executorName, final String victimIP, final String executorIP, final String expiresIn, final String reason, final boolean isSuspension) {
         this.victimUUID = victimUUID;
         this.executorUUID = executorUUID;
         this.victimName = victimName;
@@ -37,39 +38,39 @@ class Ban {
         this.isSuspension = isSuspension;
     }
 
-    UUID getExecutor() {
+    public UUID getExecutor() {
         return executorUUID;
     }
 
-    String getExecutorIP() {
+    public String getExecutorIP() {
         return executorIP;
     }
 
-    String getExecutorName() {
+    public String getExecutorName() {
         return executorName;
     }
 
-    String getExpires() {
+    public String getExpires() {
         return expiresIn;
     }
 
-    String getReason() {
+    public String getReason() {
         return reason;
     }
 
-    UUID getVictim() {
+    public UUID getVictim() {
         return victimUUID;
     }
 
-    String getVictimIP() {
+    public String getVictimIP() {
         return victimIP;
     }
 
-    String getVictimName() {
+    public String getVictimName() {
         return victimName;
     }
 
-    boolean isSuspension() {
+    public boolean isSuspension() {
         return isSuspension;
     }
 

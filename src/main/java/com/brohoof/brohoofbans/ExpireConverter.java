@@ -37,14 +37,14 @@ public class ExpireConverter {
         return (int) days + "d-" + (int) hours + "h-" + (int) mins + "m-" + seconds + "s";
     }
 
-    public long getExpires(String filter) throws CommandException {
+    public long getExpires(String filter) throws IllegalArgumentException {
         if (filter == null)
             return 0L;
         if (filter.equalsIgnoreCase("now"))
             return System.currentTimeMillis();
         final String[] groupings = filter.split("-");
         if (groupings.length == 0)
-            throw new CommandException("Invalid date specified");
+            throw new IllegalArgumentException("Invalid date specified");
         final Calendar cal = new GregorianCalendar();
         cal.setTimeInMillis(0);
         for (final String str : groupings) {
@@ -66,7 +66,7 @@ public class ExpireConverter {
                     type = Calendar.YEAR;
                     break;
                 default:
-                    throw new CommandException("Unknown date value specified");
+                    throw new IllegalArgumentException("Unknown date value specified");
             }
             cal.add(type, Integer.valueOf(str.substring(0, str.length() - 1)));
         }
