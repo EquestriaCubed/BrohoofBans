@@ -27,20 +27,18 @@ public class SuspendCommandHandler extends AbstractCommandHandler {
                 return false;
             // The player is online.
             OfflinePlayer victim = getPlayer(args[0]);
-            final String reason = getReason(args, false);
+            String reason = getReason(args, false);
             if (victim instanceof Player) {
-                if (sender instanceof Player) {
+                if (sender instanceof Player)
                     // Sender is a Player
                     return suspendCommand.execute((Player) sender, (Player) victim, reason);
-                }
                 // It's console
                 return suspendCommand.execute((Player) victim, reason);
             }
             // Offline player
-            if (sender instanceof Player) {
+            if (sender instanceof Player)
                 // Sender is a Player
                 return suspendCommand.execute((Player) sender, victim, reason);
-            }
             // It's console
             return suspendCommand.execute(victim, reason);
         }

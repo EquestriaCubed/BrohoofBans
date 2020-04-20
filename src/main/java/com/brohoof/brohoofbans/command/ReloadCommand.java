@@ -13,8 +13,7 @@ public class ReloadCommand extends AbstractCommand {
     public ReloadCommand(BrohoofBansPlugin plugin, Data data, Settings settings) {
         super(plugin, data, settings);
     }
-    
-    
+
     public boolean execute(CommandSender sender) {
         if (sender.hasPermission("brohoofbans.reload")) {
             sender.sendMessage(AbstractCommandHandler.NO_PERMISSION);

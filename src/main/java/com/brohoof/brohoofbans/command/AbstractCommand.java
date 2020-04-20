@@ -14,8 +14,8 @@ import com.brohoof.brohoofbans.Settings;
 
 public abstract class AbstractCommand {
 
-    protected BrohoofBansPlugin plugin;
     protected Data data;
+    protected BrohoofBansPlugin plugin;
     protected Settings settings;
 
     public AbstractCommand(BrohoofBansPlugin plugin, Data data, Settings settings) {
@@ -25,22 +25,19 @@ public abstract class AbstractCommand {
     }
 
     protected void broadcastBanMessage(Ban ban) {
-        if (settings.broadcastMessage) {
-            if (ban.isSuspension()) {
+        if (settings.broadcastMessage)
+            if (ban.isSuspension())
                 Bukkit.broadcastMessage(ChatColor.YELLOW + "Suspended " + ban.getVictimName() + " for " + ban.getReason());
-            } else {
+            else
                 Bukkit.broadcastMessage(ChatColor.YELLOW + "Banned " + ban.getVictimName() + " for " + ban.getReason());
-            }
-        }
     }
 
     protected void broadcastKickMessage(Player target, String reason) {
-        if (settings.broadcastMessage) {
+        if (settings.broadcastMessage)
             Bukkit.broadcastMessage(ChatColor.YELLOW + "Kicked " + target.getName() + " for " + reason);
-        }
     }
 
-    protected String getIP(final InetSocketAddress address) {
+    protected String getIP(InetSocketAddress address) {
         return Objects.requireNonNull(address.getAddress().getHostAddress());
     }
 }

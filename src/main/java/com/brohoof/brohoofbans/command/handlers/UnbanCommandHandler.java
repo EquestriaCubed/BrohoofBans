@@ -27,8 +27,8 @@ public class UnbanCommandHandler extends AbstractCommandHandler {
             // Format = /unban <playerName | UUID> args[0] is player.
             if (args.length < 1)
                 return false;
-            OfflinePlayer player = this.getPlayer(args[0]);
-            final Optional<Ban> ban = data.getBan(player.getUniqueId());
+            OfflinePlayer player = getPlayer(args[0]);
+            Optional<Ban> ban = data.getBan(player.getUniqueId());
             if (ban.isPresent())
                 return unbanCommand.execute(sender, ban.get());
             return unbanCommand.execute(sender, player.getName());

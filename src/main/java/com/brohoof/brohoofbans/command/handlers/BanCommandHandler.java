@@ -19,7 +19,7 @@ public class BanCommandHandler extends AbstractCommandHandler {
 
     public BanCommandHandler(BrohoofBansPlugin plugin, Data data, Settings settings, ExpireConverter converter) {
         super(data);
-        this.banCommand = new BanCommand(plugin, data, settings);
+        banCommand = new BanCommand(plugin, data, settings);
         this.converter = converter;
     }
 
@@ -35,7 +35,7 @@ public class BanCommandHandler extends AbstractCommandHandler {
                 try {
                     expires = String.valueOf(converter.getExpires(args[1]));
                     isTemporary = true;
-                } catch (final IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     data.error(e);
                     sender.sendMessage(ChatColor.RED + "That is not a valid time format. " + ChatColor.WHITE + "1h-5m " + ChatColor.RED + "is a valid format.");
                     return true;
@@ -44,20 +44,18 @@ public class BanCommandHandler extends AbstractCommandHandler {
                 return false;
             // The player is online.
             OfflinePlayer victim = getPlayer(args[isTemporary ? 2 : 0]);
-            final String reason = getReason(args, isTemporary);
+            String reason = getReason(args, isTemporary);
             if (victim instanceof Player) {
-                if (sender instanceof Player) {
+                if (sender instanceof Player)
                     // Sender is a Player
                     return banCommand.execute((Player) sender, (Player) victim, expires, reason);
-                }
                 // It's console
                 return banCommand.execute(victim, expires, reason);
             }
             // Offline player
-            if (sender instanceof Player) {
+            if (sender instanceof Player)
                 // Sender is a Player
                 return banCommand.execute((Player) sender, victim, expires, reason);
-            }
             // It's console
             return banCommand.execute(victim, expires, reason);
         }

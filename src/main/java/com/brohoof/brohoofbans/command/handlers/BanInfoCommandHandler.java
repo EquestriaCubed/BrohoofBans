@@ -29,14 +29,14 @@ public class BanInfoCommandHandler extends AbstractCommandHandler {
             if (args.length < 1)
                 return false;
             if (args[0].equalsIgnoreCase("-i")) {
-                OfflinePlayer player = this.getPlayer(args[1]);
+                OfflinePlayer player = getPlayer(args[1]);
                 Optional<Ban> ban = data.getBan(player.getUniqueId());
                 if (ban.isPresent())
                     return banInfoCommand.execute(sender, ban.get(), true);
                 return banInfoCommand.execute(sender, player.getName());
             }
             // Not a -i
-            OfflinePlayer player = this.getPlayer(args[0]);
+            OfflinePlayer player = getPlayer(args[0]);
             Optional<Ban> ban = data.getBan(player.getUniqueId());
             if (ban.isPresent())
                 return banInfoCommand.execute(sender, ban.get(), false);

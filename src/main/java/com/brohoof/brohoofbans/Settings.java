@@ -4,19 +4,19 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class Settings {
 
+    public boolean broadcastMessage;
     public String dbDatabase;
     public String dbHost;
     public String dbPass;
     public String dbPort;
     public String dbPrefix;
     public String dbUser;
-    private final BrohoofBansPlugin plugin;
+    private BrohoofBansPlugin plugin;
+    public boolean showQueries;
     public boolean stackTraces;
     public String suspendReason;
-    public boolean showQueries;
-    public boolean broadcastMessage;
 
-    public Settings(final BrohoofBansPlugin plugin) {
+    public Settings(BrohoofBansPlugin plugin) {
         this.plugin = plugin;
         readSettings(plugin.getConfig());
     }
@@ -26,7 +26,7 @@ public class Settings {
      *
      * @param pConfig
      */
-    private void readSettings(final FileConfiguration config) {
+    private void readSettings(FileConfiguration config) {
         stackTraces = config.getBoolean("general.printStackTraces");
         suspendReason = config.getString("general.suspendReason");
         showQueries = config.getBoolean("general.showQueries");

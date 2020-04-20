@@ -15,40 +15,40 @@ import com.brohoof.brohoofbans.Data;
 
 public abstract class AbstractCommandHandler implements CommandExecutor {
 
-    public final static UUID CONSOLE_UUID = UUID.fromString("3c879ef9-95c2-44d1-98f9-2824610477c8");
-    public final static String NO_PERMISSION = ChatColor.RED + "You do not have permission.";
+    public static UUID CONSOLE_UUID = UUID.fromString("3c879ef9-95c2-44d1-98f9-2824610477c8");
+    public static String NO_PERMISSION = ChatColor.RED + "You do not have permission.";
     protected Data data;
 
     public AbstractCommandHandler(Data data) {
         this.data = data;
     }
 
-    protected Optional<Ban> getBan(final String uuidorName) {
-        return data.getBan(this.getPlayer(uuidorName).getUniqueId());
+    protected Optional<Ban> getBan(String uuidorName) {
+        return data.getBan(getPlayer(uuidorName).getUniqueId());
     }
 
-    protected String getIP(final InetSocketAddress address) {
+    protected String getIP(InetSocketAddress address) {
         return address.getAddress().getHostAddress();
     }
 
     @SuppressWarnings("deprecation")
-    protected OfflinePlayer getPlayer(final String playerORuuid) {
+    protected OfflinePlayer getPlayer(String playerORuuid) {
         try {
             UUID uuid = UUID.fromString(playerORuuid);
-            final Player p = Bukkit.getPlayer(uuid);
+            Player p = Bukkit.getPlayer(uuid);
             if (p == null)
                 return Bukkit.getOfflinePlayer(uuid);
             return p;
-        } catch (final IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             // Not a UUID
-            for (final Player p : Bukkit.getOnlinePlayers())
+            for (Player p : Bukkit.getOnlinePlayers())
                 if (p.getName().equalsIgnoreCase(playerORuuid))
                     return p;
             return Bukkit.getServer().getOfflinePlayer(playerORuuid);
         }
     }
 
-    protected String getReason(final String[] args, final boolean hasFlag) {
+    protected String getReason(String[] args, boolean hasFlag) {
         String reason = "";
         int j = 1;
         if (hasFlag)

@@ -25,7 +25,7 @@ public class KickCommandHandler extends AbstractCommandHandler {
             // Format = /kick playerName | UUID reason... args[0 OR 1] is the name or UUID, other args are reason
             if (args.length < 2)
                 return false;
-            OfflinePlayer target = this.getPlayer(args[0]);
+            OfflinePlayer target = getPlayer(args[0]);
             final String reason = getReason(args, false);
             if (target instanceof Player)
                 return kickCommand.execute(sender, (Player) target, reason);

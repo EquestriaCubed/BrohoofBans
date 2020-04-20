@@ -41,35 +41,6 @@ public class BanInfoCommand extends AbstractCommand {
         return true;
     }
 
-    private void sendPartialData(CommandSender sender, Ban ban) {
-        if (ban.isSuspension())
-            sendPartialSuspensionData(sender, ban);
-        else
-            sendPartialBanData(sender, ban);
-    }
-
-    private void sendPartialBanData(CommandSender sender, Ban ban) {
-        sender.sendMessage(ChatColor.YELLOW + ban.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "banned.");
-        sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + ban.getVictim().toString() + ". Their name is " + ban.getVictimName());
-        if (ban.getExpires().equalsIgnoreCase("NEVER"))
-            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban does " + ChatColor.RED + "not " + ChatColor.YELLOW + "expire.");
-        else
-            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + converter.getFriendlyTime(Long.parseLong(ban.getExpires())));
-    }
-
-    private void sendPartialSuspensionData(CommandSender sender, Ban ban) {
-        sender.sendMessage(ChatColor.YELLOW + ban.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "suspended.");
-        sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + ban.getVictim().toString() + ". Their name is " + ban.getVictimName());
-        sender.sendMessage(ChatColor.YELLOW + "The Victim is suspended for " + ChatColor.WHITE + ban.getReason());
-    }
-
-    private void sendFullData(CommandSender sender, Ban ban) {
-        if (ban.isSuspension())
-            sendFullSuspensionData(sender, ban);
-        else
-            sendFullBanData(sender, ban);
-    }
-
     private void sendFullBanData(CommandSender sender, Ban ban) {
         sender.sendMessage(ChatColor.YELLOW + ban.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "banned.");
         sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + ban.getVictim().toString() + ". Their name is " + ban.getVictimName());
@@ -81,11 +52,40 @@ public class BanInfoCommand extends AbstractCommand {
             sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + converter.getFriendlyTime(Long.parseLong(ban.getExpires())));
     }
 
+    private void sendFullData(CommandSender sender, Ban ban) {
+        if (ban.isSuspension())
+            sendFullSuspensionData(sender, ban);
+        else
+            sendFullBanData(sender, ban);
+    }
+
     private void sendFullSuspensionData(CommandSender sender, Ban ban) {
         sender.sendMessage(ChatColor.YELLOW + ban.getVictimName() + ChatColor.RED + "is " + ChatColor.YELLOW + "suspended.");
         sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + ban.getVictim().toString() + ". Their name is " + ban.getVictimName());
         sender.sendMessage(ChatColor.YELLOW + "Issuer UUID is " + ban.getExecutor().toString() + ". Their name is " + ban.getExecutorName());
         sender.sendMessage(ChatColor.YELLOW + "The Victim is suspended for " + ChatColor.WHITE + ban.getReason());
         sender.sendMessage(ChatColor.YELLOW + "The Issuer's IP is " + ban.getExecutorIP() + ". The Victim's IP is " + ban.getVictimIP());
+    }
+
+    private void sendPartialBanData(CommandSender sender, Ban ban) {
+        sender.sendMessage(ChatColor.YELLOW + ban.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "banned.");
+        sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + ban.getVictim().toString() + ". Their name is " + ban.getVictimName());
+        if (ban.getExpires().equalsIgnoreCase("NEVER"))
+            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban does " + ChatColor.RED + "not " + ChatColor.YELLOW + "expire.");
+        else
+            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + converter.getFriendlyTime(Long.parseLong(ban.getExpires())));
+    }
+
+    private void sendPartialData(CommandSender sender, Ban ban) {
+        if (ban.isSuspension())
+            sendPartialSuspensionData(sender, ban);
+        else
+            sendPartialBanData(sender, ban);
+    }
+
+    private void sendPartialSuspensionData(CommandSender sender, Ban ban) {
+        sender.sendMessage(ChatColor.YELLOW + ban.getVictimName() + " " + ChatColor.RED + "is " + ChatColor.YELLOW + "suspended.");
+        sender.sendMessage(ChatColor.YELLOW + "Victim UUID is " + ban.getVictim().toString() + ". Their name is " + ban.getVictimName());
+        sender.sendMessage(ChatColor.YELLOW + "The Victim is suspended for " + ChatColor.WHITE + ban.getReason());
     }
 }

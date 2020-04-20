@@ -4,15 +4,15 @@ import java.util.UUID;
 
 public class Ban {
 
-    private final String executorIP;
-    private final String executorName;
-    private final UUID executorUUID;
-    private final String expiresIn;
-    private final boolean isSuspension;
-    private final String reason;
-    private final String victimIP;
-    private final String victimName;
-    private final UUID victimUUID;
+    private String executorIP;
+    private String executorName;
+    private UUID executorUUID;
+    private String expiresIn;
+    private boolean isSuspension;
+    private String reason;
+    private String victimIP;
+    private String victimName;
+    private UUID victimUUID;
 
     /**
      *
@@ -26,7 +26,7 @@ public class Ban {
      * @param reason
      * @param isSuspension
      */
-    public Ban(final UUID victimUUID, final UUID executorUUID, final String victimName, final String executorName, final String victimIP, final String executorIP, final String expiresIn, final String reason, final boolean isSuspension) {
+    public Ban(UUID victimUUID, UUID executorUUID, String victimName, String executorName, String victimIP, String executorIP, String expiresIn, String reason, boolean isSuspension) {
         this.victimUUID = victimUUID;
         this.executorUUID = executorUUID;
         this.victimName = victimName;

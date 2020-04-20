@@ -15,6 +15,12 @@ public class BanCommand extends AbstractCommand {
         super(plugin, data, settings);
     }
 
+    public boolean execute(OfflinePlayer victim, String expires, String reason) {
+        Ban ban = new Ban(victim.getUniqueId(), AbstractCommandHandler.CONSOLE_UUID, victim.getName(), "CONSOLE", "NULL", "127.0.0.1", expires, reason, false);
+        saveBan(ban);
+        return true;
+    }
+
     public boolean execute(Player sender, OfflinePlayer victim, String expires, String reason) {
         if (!sender.hasPermission("brohoofbans.ban")) {
             sender.sendMessage(AbstractCommandHandler.NO_PERMISSION);
@@ -32,12 +38,6 @@ public class BanCommand extends AbstractCommand {
         }
         Ban ban = new Ban(victim.getUniqueId(), sender.getUniqueId(), victim.getName(), sender.getName(), getIP(victim.getAddress()), getIP(sender.getAddress()), expires, reason, false);
         victim.kickPlayer("You are banned for:\n" + reason);
-        saveBan(ban);
-        return true;
-    }
-
-    public boolean execute(OfflinePlayer victim, String expires, String reason) {
-        Ban ban = new Ban(victim.getUniqueId(), AbstractCommandHandler.CONSOLE_UUID, victim.getName(), "CONSOLE", "NULL", "127.0.0.1", expires, reason, false);
         saveBan(ban);
         return true;
     }

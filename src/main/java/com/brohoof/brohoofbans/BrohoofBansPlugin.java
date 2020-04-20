@@ -16,16 +16,16 @@ public class BrohoofBansPlugin extends JavaPlugin {
     private Data data;
     private Settings settings;
 
+    public ExpireConverter getConverter() {
+        return converter;
+    }
+
     public Data getData() {
         return data;
     }
 
     public Settings getSettings() {
         return settings;
-    }
-
-    public ExpireConverter getConverter() {
-        return converter;
     }
 
     @Override
