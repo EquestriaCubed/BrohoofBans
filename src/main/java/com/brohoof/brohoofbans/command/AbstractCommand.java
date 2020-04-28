@@ -7,20 +7,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.Ban;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
-import com.brohoof.brohoofbans.Data;
 import com.brohoof.brohoofbans.Settings;
 
 public abstract class AbstractCommand {
 
-    protected Data data;
     protected BrohoofBansPlugin plugin;
     protected Settings settings;
+    protected API api;
 
-    public AbstractCommand(BrohoofBansPlugin plugin, Data data, Settings settings) {
+    public AbstractCommand(BrohoofBansPlugin plugin, API api, Settings settings) {
         this.plugin = plugin;
-        this.data = data;
+        this.api = api;
         this.settings = settings;
     }
 

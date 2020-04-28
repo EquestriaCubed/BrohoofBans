@@ -5,26 +5,23 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
 
+import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.Ban;
-import com.brohoof.brohoofbans.Data;
 
 public abstract class AbstractCommandHandler implements CommandExecutor {
 
-    public static UUID CONSOLE_UUID = UUID.fromString("3c879ef9-95c2-44d1-98f9-2824610477c8");
-    public static String NO_PERMISSION = ChatColor.RED + "You do not have permission.";
-    protected Data data;
+    protected API api;
 
-    public AbstractCommandHandler(Data data) {
-        this.data = data;
+    public AbstractCommandHandler(API api) {
+        this.api = api;
     }
 
     protected Optional<Ban> getBan(String uuidorName) {
-        return data.getBan(getPlayer(uuidorName).getUniqueId());
+        return api.getBan(getPlayer(uuidorName).getUniqueId());
     }
 
     protected String getIP(InetSocketAddress address) {

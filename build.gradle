@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.brohoof'
-version = '4'
+version = '5'
 
 repositories {
 	jcenter()
@@ -18,8 +18,8 @@ repositories {
 	}
 }
 dependencies {
-	compile 'org.bukkit:bukkit:1.15.2-R0.1-SNAPSHOT'
-	compile fileTree(dir: 'libs', include: '*.jar')
+	implementation 'org.bukkit:bukkit:1.15.2-R0.1-SNAPSHOT'
+	implementation fileTree(dir: 'libs', include: '*.jar')
 
 }
 

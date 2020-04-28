@@ -2,20 +2,20 @@ package com.brohoof.brohoofbans.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.sweetiebelle.lib.SweetieLib;
 
+import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.Ban;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
-import com.brohoof.brohoofbans.Data;
 import com.brohoof.brohoofbans.ExpireConverter;
 import com.brohoof.brohoofbans.Settings;
-import com.brohoof.brohoofbans.command.handlers.AbstractCommandHandler;
 
 public class BanInfoCommand extends AbstractCommand {
 
     private ExpireConverter converter;
 
-    public BanInfoCommand(BrohoofBansPlugin plugin, Data data, ExpireConverter converter, Settings settings) {
-        super(plugin, data, settings);
+    public BanInfoCommand(BrohoofBansPlugin plugin, API api, ExpireConverter converter, Settings settings) {
+        super(plugin, api, settings);
         this.converter = converter;
     }
 
@@ -25,14 +25,14 @@ public class BanInfoCommand extends AbstractCommand {
                 sendFullData(sender, ban);
                 return true;
             }
-            sender.sendMessage(AbstractCommandHandler.NO_PERMISSION);
+            sender.sendMessage(SweetieLib.NO_PERMISSION);
             return true;
         }
         if (sender.hasPermission("brohoofbans.baninfo")) {
             sendPartialData(sender, ban);
             return true;
         }
-        sender.sendMessage(AbstractCommandHandler.NO_PERMISSION);
+        sender.sendMessage(SweetieLib.NO_PERMISSION);
         return true;
     }
 

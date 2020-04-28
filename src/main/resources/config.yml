@@ -1,12 +1,6 @@
 general:
-  printStackTraces: true
   suspendReason: You broke the rules and were suspended!\nFind the forum called Suspensions and look for the post with your name.
-  showQueries: true
   broadcastMessage: true
+  printStackTraces: false
 database:
-  username: minecraft
-  password: minecraft
-  host: localhost
-  port: 3306
-  database: creative
   prefix: BrohoofBans_

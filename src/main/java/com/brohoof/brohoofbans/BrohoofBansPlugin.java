@@ -1,7 +1,7 @@
 package com.brohoof.brohoofbans;
 
 import org.bukkit.plugin.java.JavaPlugin;
-
+import org.sweetiebelle.lib.SweetieLib;
 import com.brohoof.brohoofbans.command.handlers.BanCommandHandler;
 import com.brohoof.brohoofbans.command.handlers.BanInfoCommandHandler;
 import com.brohoof.brohoofbans.command.handlers.CoreCommandHandler;
@@ -15,7 +15,12 @@ public class BrohoofBansPlugin extends JavaPlugin {
     private ExpireConverter converter;
     private Data data;
     private Settings settings;
-
+    private static API api;
+    
+    
+    public static API getAPI() {
+        return api;
+    }
     public ExpireConverter getConverter() {
         return converter;
     }
@@ -36,14 +41,19 @@ public class BrohoofBansPlugin extends JavaPlugin {
     public void onEnable() {
         converter = new ExpireConverter();
         settings = new Settings(this);
-        data = new Data(this, settings);
-        getCommand("ban").setExecutor(new BanCommandHandler(this, data, settings, converter));
-        getCommand("kick").setExecutor(new KickCommandHandler(this, data, settings));
-        getCommand("baninfo").setExecutor(new BanInfoCommandHandler(this, data, settings, converter));
-        getCommand("isbanned").setExecutor(new IsBannedCommandHandler(this, data, settings));
-        getCommand("unban").setExecutor(new UnbanCommandHandler(this, data, settings));
-        getCommand("suspend").setExecutor(new SuspendCommandHandler(this, data, settings));
-        getCommand("brohoofbans").setExecutor(new CoreCommandHandler(this, data, settings));
-        getServer().getPluginManager().registerEvents(new EventManager(data, converter, settings), this);
+        try {
+            data = new Data(this, settings, SweetieLib.getConnection());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        api = new API(data);
+        getCommand("ban").setExecutor(new BanCommandHandler(this, api, settings, converter));
+        getCommand("kick").setExecutor(new KickCommandHandler(this, api, settings));
+        getCommand("baninfo").setExecutor(new BanInfoCommandHandler(this, api, settings, converter));
+        getCommand("isbanned").setExecutor(new IsBannedCommandHandler(this, api, settings));
+        getCommand("unban").setExecutor(new UnbanCommandHandler(this, api, settings));
+        getCommand("suspend").setExecutor(new SuspendCommandHandler(this, api, settings));
+        getCommand("brohoofbans").setExecutor(new CoreCommandHandler(this, api, settings));
+        getServer().getPluginManager().registerEvents(new EventManager(api, data, converter, settings), this);
     }
 }

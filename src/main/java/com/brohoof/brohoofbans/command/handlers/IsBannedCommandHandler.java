@@ -6,9 +6,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.Ban;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
-import com.brohoof.brohoofbans.Data;
 import com.brohoof.brohoofbans.Settings;
 import com.brohoof.brohoofbans.command.IsBannedCommand;
 
@@ -16,9 +16,9 @@ public class IsBannedCommandHandler extends AbstractCommandHandler {
 
     private IsBannedCommand isBannedCommand;
 
-    public IsBannedCommandHandler(BrohoofBansPlugin plugin, Data data, Settings settings) {
-        super(data);
-        isBannedCommand = new IsBannedCommand(plugin, data, settings);
+    public IsBannedCommandHandler(BrohoofBansPlugin plugin, API api, Settings settings) {
+        super(api);
+        isBannedCommand = new IsBannedCommand(plugin, api, settings);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class IsBannedCommandHandler extends AbstractCommandHandler {
             if (args.length < 1)
                 return false;
             OfflinePlayer player = getPlayer(args[0]);
-            Optional<Ban> ban = data.getBan(player.getUniqueId());
+            Optional<Ban> ban = api.getBan(player.getUniqueId());
             if (ban.isPresent())
                 return isBannedCommand.execute(sender, ban.get());
             return isBannedCommand.execute(sender, player.getName());

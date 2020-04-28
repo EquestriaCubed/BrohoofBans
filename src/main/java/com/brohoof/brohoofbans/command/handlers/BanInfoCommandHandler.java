@@ -6,9 +6,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.Ban;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
-import com.brohoof.brohoofbans.Data;
 import com.brohoof.brohoofbans.ExpireConverter;
 import com.brohoof.brohoofbans.Settings;
 import com.brohoof.brohoofbans.command.BanInfoCommand;
@@ -17,9 +17,9 @@ public class BanInfoCommandHandler extends AbstractCommandHandler {
 
     private BanInfoCommand banInfoCommand;
 
-    public BanInfoCommandHandler(BrohoofBansPlugin plugin, Data data, Settings settings, ExpireConverter converter) {
-        super(data);
-        banInfoCommand = new BanInfoCommand(plugin, data, converter, settings);
+    public BanInfoCommandHandler(BrohoofBansPlugin plugin, API api, Settings settings, ExpireConverter converter) {
+        super(api);
+        banInfoCommand = new BanInfoCommand(plugin, api, converter, settings);
     }
 
     @Override
@@ -30,14 +30,14 @@ public class BanInfoCommandHandler extends AbstractCommandHandler {
                 return false;
             if (args[0].equalsIgnoreCase("-i")) {
                 OfflinePlayer player = getPlayer(args[1]);
-                Optional<Ban> ban = data.getBan(player.getUniqueId());
+                Optional<Ban> ban = BrohoofBansPlugin.getAPI().getBan(player.getUniqueId());
                 if (ban.isPresent())
                     return banInfoCommand.execute(sender, ban.get(), true);
                 return banInfoCommand.execute(sender, player.getName());
             }
             // Not a -i
             OfflinePlayer player = getPlayer(args[0]);
-            Optional<Ban> ban = data.getBan(player.getUniqueId());
+            Optional<Ban> ban = BrohoofBansPlugin.getAPI().getBan(player.getUniqueId());
             if (ban.isPresent())
                 return banInfoCommand.execute(sender, ban.get(), false);
             return banInfoCommand.execute(sender, player.getName());

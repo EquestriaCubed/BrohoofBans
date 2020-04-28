@@ -3,16 +3,16 @@ package com.brohoof.brohoofbans.command;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.sweetiebelle.lib.SweetieLib;
 
+import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
-import com.brohoof.brohoofbans.Data;
 import com.brohoof.brohoofbans.Settings;
-import com.brohoof.brohoofbans.command.handlers.AbstractCommandHandler;
 
 public class KickCommand extends AbstractCommand {
 
-    public KickCommand(BrohoofBansPlugin plugin, Data data, Settings settings) {
-        super(plugin, data, settings);
+    public KickCommand(BrohoofBansPlugin plugin, API api, Settings settings) {
+        super(plugin, api, settings);
     }
 
     public boolean execute(CommandSender sender) {
@@ -22,7 +22,7 @@ public class KickCommand extends AbstractCommand {
 
     public boolean execute(CommandSender sender, Player target, String reason) {
         if (!sender.hasPermission("brohoofbans.kick")) {
-            sender.sendMessage(AbstractCommandHandler.NO_PERMISSION);
+            sender.sendMessage(SweetieLib.NO_PERMISSION);
             return true;
         }
         target.kickPlayer(reason);

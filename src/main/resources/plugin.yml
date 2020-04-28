@@ -2,6 +2,8 @@ name: BrohoofBans
 main: com.brohoof.brohoofbans.BrohoofBansPlugin
 version: $version
 authors: [SweetieBelle]
+depend: [SweetieLib]
+loadbefore: [Vault]
 description: >
              Bans players and other stuff
 api-version: 1.15

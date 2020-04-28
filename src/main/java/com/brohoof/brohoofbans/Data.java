@@ -1,7 +1,5 @@
 package com.brohoof.brohoofbans;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,23 +7,25 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.sweetiebelle.lib.ConnectionManager;
 
-public class Data {
+class Data {
 
-    private Connection connection;
     private BrohoofBansPlugin p;
     private Settings s;
+    private ConnectionManager connection;
 
-    public Data(BrohoofBansPlugin p, Settings s) {
+    Data(BrohoofBansPlugin p, Settings s, ConnectionManager connectionManager) {
         this.s = s;
         this.p = p;
+        this.connection = connectionManager;
         createTables();
     }
 
     /** Creates a new table in the database */
     private boolean createTable(String pQuery) {
         try {
-            executeQuery(pQuery);
+            connection.executeUpdate(pQuery);
             return true;
         } catch (SQLException e) {
             error(e);
@@ -48,7 +48,7 @@ public class Data {
      * @param e
      *            Exception
      */
-    public void error(Exception e) {
+    private void error(Exception e) {
         if (s.stackTraces) {
             e.printStackTrace();
             return;
@@ -69,45 +69,7 @@ public class Data {
         e.printStackTrace();
     }
 
-    /**
-     * Executes the given SQL statement, which may be an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement or an SQL statement that returns nothing, such as an SQL DDL statement.
-     * <p>
-     *
-     * @param query
-     *            an SQL Data Manipulation Language (DML) statement, such as INSERT, UPDATE or DELETE; or an SQL statement that returns nothing, such as a DDL statement.
-     * @return either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
-     * @throws SQLException
-     *             if a database access error occurs, this method is called on a closed <code>Statement</code>, the given SQL statement produces a <code>ResultSet</code> object, the method is called on a <code>PreparedStatement</code> or <code>CallableStatement</code>
-     */
-    private int executeQuery(String query) throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase + "?autoReconnect=true&useSSL=false");
-            connection = DriverManager.getConnection(connect, s.dbUser, s.dbPass);
-            p.getLogger().info("Connecting to " + s.dbUser + "@" + connect + "...");
-        }
-        if (s.showQueries)
-            p.getLogger().info("[QUERY] " + query);
-        return connection.createStatement().executeUpdate(query);
-    }
-
-    public void forceConnectionRefresh() {
-        try {
-            if (connection == null || connection.isClosed()) {
-                String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase + "?autoReconnect=true&useSSL=false");
-                connection = DriverManager.getConnection(connect, s.dbUser, s.dbPass);
-                p.getLogger().info("Connecting to " + s.dbUser + "@" + connect + "...");
-            } else {
-                connection.close();
-                String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase + "?autoReconnect=true&useSSL=false");
-                connection = DriverManager.getConnection(connect, s.dbUser, s.dbPass);
-                p.getLogger().info("Connecting to " + s.dbUser + "@" + connect + "...");
-            }
-        } catch (SQLException e) {
-            error(e);
-        }
-    }
-
-    public Optional<Ban> getBan(String playername) {
+    Optional<Ban> getBan(String playername) {
         String executorIP;
         String executorName;
         UUID executorUUID;
@@ -118,7 +80,7 @@ public class Data {
         UUID victimUUID;
         boolean isSuspended;
         try {
-            ResultSet rs = getResultSet("SELECT * FROM " + s.dbPrefix + "ban WHERE victimName = \"" + playername + "\";");
+            ResultSet rs = connection.executeQuery("SELECT * FROM " + s.dbPrefix + "ban WHERE victimName = \"" + playername + "\";");
             if (rs.next()) {
                 executorIP = rs.getString("executorIP");
                 executorName = rs.getString("executorName");
@@ -139,7 +101,7 @@ public class Data {
         }
     }
 
-    public Optional<Ban> getBan(UUID uuid) {
+    Optional<Ban> getBan(UUID uuid) {
         String executorIP;
         String executorName;
         UUID executorUUID;
@@ -150,7 +112,7 @@ public class Data {
         UUID victimUUID;
         boolean isSuspended;
         try {
-            ResultSet rs = getResultSet("SELECT * FROM " + s.dbPrefix + "ban WHERE victimUUID = \"" + uuid.toString() + "\";");
+            ResultSet rs = connection.executeQuery("SELECT * FROM " + s.dbPrefix + "ban WHERE victimUUID = \"" + uuid.toString() + "\";");
             if (rs.next()) {
                 executorIP = rs.getString("executorIP");
                 executorName = rs.getString("executorName");
@@ -171,57 +133,28 @@ public class Data {
         }
     }
 
-    /**
-     * Private method for getting an SQL connection, then submitting a query. This method throws an SQL Exception to allow another method to handle it.
-     *
-     * @param query
-     *            an SQL statement to be sent to the database, typically a static SQL <code>SELECT</code> statement
-     * @return a <code>ResultSet</code> object that contains the data produced by the given query; never <code>null</code>
-     * @throws SQLException
-     *             if a database access error occurs, this method is called on a closed <code>Statement</code>, the given SQL statement produces a <code>ResultSet</code> object, the method is called on a <code>PreparedStatement</code> or <code>CallableStatement</code>
-     */
-    private ResultSet getResultSet(String query) throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            String connect = new String("jdbc:mysql://" + s.dbHost + ":" + s.dbPort + "/" + s.dbDatabase + "?autoReconnect=true&useSSL=false");
-            connection = DriverManager.getConnection(connect, s.dbUser, s.dbPass);
-            p.getLogger().info("Connecting to " + s.dbUser + "@" + connect + "...");
-        }
-        if (s.showQueries)
-            p.getLogger().info("[QUERY] " + query);
-        return connection.createStatement().executeQuery(query);
-    }
-
-    /**
-     * Checks if a player is banned or not.
-     *
-     * @deprecated use {@link #getBan(UUID)} which returns a {@link java.util.Optional} to determine if a ban exists.
-     * @param uuid
-     *            the UUID of the player to check
-     * @return if they are banned or not
-     */
-    @Deprecated
-    public boolean isBanned(UUID uuid) {
-        return getBan(uuid).isPresent();
-    }
-
-    public void saveBan(Ban b) {
+    void saveBan(Ban b) {
         try {
-            if (this.getBan(b.getVictim()).isPresent()) {
-                PreparedStatement update = connection.prepareStatement(String.format("UPDATE %sban SET victimName = ?, victimIP = ?, executorUUID = ?, " + "executorName = ?, executorIP = ?, isSuspension = ?, expires = ?, reason = ? WHERE victimUUID = ?;", s.dbPrefix));
-                update.setString(1, b.getVictimName());
-                update.setString(2, b.getVictimIP());
-                update.setString(3, b.getExecutor().toString());
-                update.setString(4, b.getExecutorName());
-                update.setString(5, b.getExecutorIP());
-                update.setBoolean(6, b.isSuspension());
-                update.setString(7, b.getExpires());
-                update.setString(8, b.getReason());
-                update.setString(9, b.getVictim().toString());
-                update.executeUpdate();
-                update.close();
-                return;
-            }
-            PreparedStatement update = connection.prepareStatement(String.format("INSERT INTO %sban (victimUUID, victimName, victimIP, executorUUID, executorName, executorIP, isSuspension, expires, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", s.dbPrefix));
+            PreparedStatement update = connection.getStatement(String.format("UPDATE %sban SET victimName = ?, victimIP = ?, executorUUID = ?, " + "executorName = ?, executorIP = ?, isSuspension = ?, expires = ?, reason = ? WHERE victimUUID = ?;", s.dbPrefix));
+            update.setString(1, b.getVictimName());
+            update.setString(2, b.getVictimIP());
+            update.setString(3, b.getExecutor().toString());
+            update.setString(4, b.getExecutorName());
+            update.setString(5, b.getExecutorIP());
+            update.setBoolean(6, b.isSuspension());
+            update.setString(7, b.getExpires());
+            update.setString(8, b.getReason());
+            update.setString(9, b.getVictim().toString());
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException e) {
+            error(e);
+        }
+    }
+
+    void createBan(Ban b) {
+        try {
+            PreparedStatement update = connection.getStatement(String.format("INSERT INTO %sban (victimUUID, victimName, victimIP, executorUUID, executorName, executorIP, isSuspension, expires, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", s.dbPrefix));
             update.setString(1, b.getVictim().toString());
             update.setString(2, b.getVictimName());
             update.setString(3, b.getVictimIP());
@@ -233,7 +166,6 @@ public class Data {
             update.setString(9, b.getReason());
             update.executeUpdate();
             update.close();
-            return;
         } catch (SQLException e) {
             error(e);
         }
@@ -241,28 +173,24 @@ public class Data {
 
     private boolean tableExists(String pTable) {
         try {
-            return getResultSet("SELECT * FROM " + pTable) != null;
+            return connection.executeQuery("SELECT * FROM " + pTable) != null;
         } catch (SQLException e) {
-            // Table 'mccreative.BrohoofBans_ban' doesn't exist
-            if (e.getMessage().equalsIgnoreCase("Table '" + s.dbDatabase + "." + pTable + "' doesn't exist") || e.getMessage().equalsIgnoreCase("Table \"" + s.dbDatabase + "." + pTable + "\" doesn't exist"))
-                return false;
-            error(e);
+            return false;
         }
-        return false;
     }
 
-    public void unban(Ban b) {
+    void unban(Ban b) {
         try {
-            executeQuery("DELETE FROM " + s.dbPrefix + "ban WHERE victimUUID = \"" + b.getVictim().toString() + "\";");
+            connection.executeUpdate("DELETE FROM " + s.dbPrefix + "ban WHERE victimUUID = \"" + b.getVictim().toString() + "\";");
         } catch (SQLException e) {
             error(e);
         }
     }
 
-    public void updateBans(Player victimOrExecutor) {
+    void updateBans(Player victimOrExecutor) {
         try {
-            executeQuery("UPDATE " + s.dbPrefix + "ban SET victimName = \"" + victimOrExecutor.getName() + "\" WHERE victimUUID = \"" + victimOrExecutor.getUniqueId().toString() + "\";");
-            executeQuery("UPDATE " + s.dbPrefix + "ban SET executorName = \"" + victimOrExecutor.getName() + "\" WHERE executorUUID = \"" + victimOrExecutor.getUniqueId().toString() + "\";");
+            connection.executeUpdate("UPDATE " + s.dbPrefix + "ban SET victimName = \"" + victimOrExecutor.getName() + "\" WHERE victimUUID = \"" + victimOrExecutor.getUniqueId().toString() + "\";");
+            connection.executeUpdate("UPDATE " + s.dbPrefix + "ban SET executorName = \"" + victimOrExecutor.getName() + "\" WHERE executorUUID = \"" + victimOrExecutor.getUniqueId().toString() + "\";");
         } catch (SQLException e) {
             error(e);
         }

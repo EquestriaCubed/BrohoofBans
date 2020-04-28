@@ -5,8 +5,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
-import com.brohoof.brohoofbans.Data;
 import com.brohoof.brohoofbans.Settings;
 import com.brohoof.brohoofbans.command.SuspendCommand;
 
@@ -14,9 +14,9 @@ public class SuspendCommandHandler extends AbstractCommandHandler {
 
     private SuspendCommand suspendCommand;
 
-    public SuspendCommandHandler(BrohoofBansPlugin plugin, Data data, Settings settings) {
-        super(data);
-        suspendCommand = new SuspendCommand(plugin, data, settings);
+    public SuspendCommandHandler(BrohoofBansPlugin plugin, API api, Settings settings) {
+        super(api);
+        suspendCommand = new SuspendCommand(plugin, api, settings);
     }
 
     @Override

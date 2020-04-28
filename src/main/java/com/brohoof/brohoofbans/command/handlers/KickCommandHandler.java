@@ -5,8 +5,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
-import com.brohoof.brohoofbans.Data;
 import com.brohoof.brohoofbans.Settings;
 import com.brohoof.brohoofbans.command.KickCommand;
 
@@ -14,9 +14,9 @@ public class KickCommandHandler extends AbstractCommandHandler {
 
     private KickCommand kickCommand;
 
-    public KickCommandHandler(BrohoofBansPlugin plugin, Data data, Settings settings) {
-        super(data);
-        kickCommand = new KickCommand(plugin, data, settings);
+    public KickCommandHandler(BrohoofBansPlugin plugin, API api, Settings settings) {
+        super(api);
+        kickCommand = new KickCommand(plugin, api, settings);
     }
 
     @Override

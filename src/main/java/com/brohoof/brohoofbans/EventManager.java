@@ -11,11 +11,13 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 class EventManager implements Listener {
 
+    private API api;
     private ExpireConverter c;
-    private Data d;
     private Settings s;
+    private Data d;
 
-    public EventManager(Data d, ExpireConverter c, Settings s) {
+    public EventManager(API api, Data d,ExpireConverter c, Settings s) {
+        this.api = api;
         this.d = d;
         this.c = c;
         this.s = s;
@@ -23,12 +25,12 @@ class EventManager implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerLoginEvent pEvent) {
-        Optional<Ban> ban = d.getBan(pEvent.getPlayer().getUniqueId());
+        Optional<Ban> ban = api.getBan(pEvent.getPlayer().getUniqueId());
         if (ban.isPresent()) {
             Ban b = ban.get();
             if (!b.getExpires().equalsIgnoreCase("NEVER"))
                 if (Long.parseLong(b.getExpires()) - System.currentTimeMillis() <= 0) {
-                    d.unban(b);
+                    api.unban(b);
                     return;
                 }
             if (b.isSuspension()) {

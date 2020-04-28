@@ -6,8 +6,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
-import com.brohoof.brohoofbans.Data;
 import com.brohoof.brohoofbans.ExpireConverter;
 import com.brohoof.brohoofbans.Settings;
 import com.brohoof.brohoofbans.command.BanCommand;
@@ -17,9 +17,9 @@ public class BanCommandHandler extends AbstractCommandHandler {
     private BanCommand banCommand;
     private ExpireConverter converter;
 
-    public BanCommandHandler(BrohoofBansPlugin plugin, Data data, Settings settings, ExpireConverter converter) {
-        super(data);
-        banCommand = new BanCommand(plugin, data, settings);
+    public BanCommandHandler(BrohoofBansPlugin plugin, API api, Settings settings, ExpireConverter converter) {
+        super(api);
+        banCommand = new BanCommand(plugin, api, settings);
         this.converter = converter;
     }
 
@@ -36,7 +36,6 @@ public class BanCommandHandler extends AbstractCommandHandler {
                     expires = String.valueOf(converter.getExpires(args[1]));
                     isTemporary = true;
                 } catch (IllegalArgumentException e) {
-                    data.error(e);
                     sender.sendMessage(ChatColor.RED + "That is not a valid time format. " + ChatColor.WHITE + "1h-5m " + ChatColor.RED + "is a valid format.");
                     return true;
                 }
