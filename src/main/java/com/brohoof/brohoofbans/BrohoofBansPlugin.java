@@ -16,11 +16,11 @@ public class BrohoofBansPlugin extends JavaPlugin {
     private Data data;
     private Settings settings;
     private static API api;
-    
-    
+
     public static API getAPI() {
         return api;
     }
+
     public ExpireConverter getConverter() {
         return converter;
     }
@@ -42,7 +42,7 @@ public class BrohoofBansPlugin extends JavaPlugin {
         converter = new ExpireConverter();
         settings = new Settings(this);
         try {
-            data = new Data(this, settings, SweetieLib.getConnection());
+            data = new Data(this, settings, SweetieLib.getPlugin().getConnection());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

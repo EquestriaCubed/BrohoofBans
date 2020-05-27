@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
-import org.sweetiebelle.lib.ConnectionManager;
+import org.sweetiebelle.lib.connection.ConnectionManager;
 
 class Data {
 
