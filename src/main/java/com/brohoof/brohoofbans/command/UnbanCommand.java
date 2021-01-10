@@ -1,6 +1,10 @@
 package com.brohoof.brohoofbans.command;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.sweetiebelle.lib.SweetieLib;
 
@@ -15,22 +19,21 @@ public class UnbanCommand extends AbstractCommand {
         super(plugin, api, settings);
     }
 
-    public boolean execute(CommandSender sender, Ban ban) {
-        if (!sender.hasPermission("brohoofbans.unban")) {
-            sender.sendMessage(SweetieLib.NO_PERMISSION);
-            return true;
-        }
-        api.unban(ban);
-        sender.sendMessage(ChatColor.YELLOW + ban.getVictimName() + " unbanned.");
-        return true;
-    }
-
-    public boolean execute(CommandSender sender, String playerName) {
-        if (!sender.hasPermission("brohoofbans.unban")) {
-            sender.sendMessage(SweetieLib.NO_PERMISSION);
-            return true;
-        }
-        sender.sendMessage(ChatColor.RED + playerName + " is not banned.");
+    public boolean execute(CommandSender sender, OfflinePlayer player) {
+        CompletableFuture<Optional<Ban>> future = this.getBan(player);
+        future.thenAccept((ban) -> {
+            if (!sender.hasPermission("brohoofbans.unban")) {
+                sender.sendMessage(SweetieLib.NO_PERMISSION);
+                return;
+            }
+            if (ban.isPresent()) {
+                api.unban(ban.get()).thenAccept((object) -> {
+                    sender.sendMessage(ChatColor.YELLOW + ban.get().getVictimName() + " unbanned.");
+                });
+                return;
+            }
+            sender.sendMessage(ChatColor.RED + player.getName() + " is not banned.");
+        });
         return true;
     }
 }

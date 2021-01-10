@@ -1,16 +1,12 @@
 package com.brohoof.brohoofbans.command.handlers;
 
-import java.net.InetSocketAddress;
-import java.util.Optional;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
 
 import com.brohoof.brohoofbans.API;
-import com.brohoof.brohoofbans.Ban;
 
 public abstract class AbstractCommandHandler implements CommandExecutor {
 
@@ -18,14 +14,6 @@ public abstract class AbstractCommandHandler implements CommandExecutor {
 
     public AbstractCommandHandler(API api) {
         this.api = api;
-    }
-
-    protected Optional<Ban> getBan(String uuidorName) {
-        return api.getBan(getPlayer(uuidorName).getUniqueId());
-    }
-
-    protected String getIP(InetSocketAddress address) {
-        return address.getAddress().getHostAddress();
     }
 
     @SuppressWarnings("deprecation")

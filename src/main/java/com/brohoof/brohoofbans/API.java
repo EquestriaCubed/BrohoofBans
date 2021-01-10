@@ -2,6 +2,9 @@ package com.brohoof.brohoofbans;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
+import org.bukkit.entity.Player;
 
 public class API {
 
@@ -11,30 +14,49 @@ public class API {
         this.data = d;
     }
 
-    public Optional<Ban> getBan(String playerName) {
-        return data.getBan(playerName);
+    public CompletableFuture<Optional<Ban>> getBan(String playerName) {
+        return Scheduler.makeFuture(() -> {
+            return data.getBan(playerName);
+        });
     }
 
-    public Optional<Ban> getBan(UUID playerUUID) {
-        return data.getBan(playerUUID);
+    public CompletableFuture<Optional<Ban>> getBan(UUID playerUUID) {
+        return Scheduler.makeFuture(() -> {
+            return data.getBan(playerUUID);
+        });
     }
 
-    public boolean isBanned(String playerName) {
-        return data.getBan(playerName).isPresent();
+    public CompletableFuture<Boolean> isBanned(String playerName) {
+        return Scheduler.makeFuture(() -> {
+            return data.getBan(playerName).isPresent();
+        });
     }
 
-    public boolean isBanned(UUID playerUUID) {
-        return data.getBan(playerUUID).isPresent();
+    public CompletableFuture<Boolean> isBanned(UUID playerUUID) {
+        return Scheduler.makeFuture(() -> {
+            return data.getBan(playerUUID).isPresent();
+        });
+
     }
 
-    public void ban(Ban ban) {
-        if (isBanned(ban.getVictim()))
-            data.saveBan(ban);
-        else
-            data.createBan(ban);
+    public CompletableFuture<Void> ban(Ban ban) {
+        return Scheduler.makeFuture(() -> {
+            if (data.getBan(ban.getExecutor()).isPresent())
+                data.saveBan(ban);
+            else
+                data.createBan(ban);
+        });
     }
 
-    public void unban(Ban ban) {
-        data.unban(ban);
+    public CompletableFuture<Void> unban(Ban ban) {
+        return Scheduler.makeFuture(() -> {
+            data.unban(ban);
+        });
+    }
+
+    public CompletableFuture<Void> updateBan(Player victimOrExecutor) {
+        return Scheduler.makeFuture(() -> {
+            data.updateBans(victimOrExecutor);
+        });
     }
 }

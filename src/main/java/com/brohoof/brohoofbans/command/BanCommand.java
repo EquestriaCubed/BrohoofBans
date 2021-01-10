@@ -16,7 +16,7 @@ public class BanCommand extends AbstractCommand {
     }
 
     public boolean execute(OfflinePlayer victim, String expires, String reason) {
-        Ban ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), "CONSOLE", "NULL", "127.0.0.1", expires, reason, false);
+        Ban ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), SweetieLib.CONSOLE_NAME, "NULL", "127.0.0.1", expires, reason, false);
         saveBan(ban);
         return true;
     }
@@ -43,7 +43,7 @@ public class BanCommand extends AbstractCommand {
     }
 
     public boolean execute(Player victim, String expires, String reason) {
-        Ban ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), "CONSOLE", getIP(victim.getAddress()), "127.0.0.1", expires, reason, false);
+        Ban ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), SweetieLib.CONSOLE_NAME, getIP(victim.getAddress()), "127.0.0.1", expires, reason, false);
         victim.kickPlayer("You are banned for:\n" + reason);
         saveBan(ban);
         return true;
@@ -51,7 +51,9 @@ public class BanCommand extends AbstractCommand {
 
     private void saveBan(Ban ban) {
         plugin.getLogger().info(ban.toString());
-        plugin.getAPI().ban(ban);
-        broadcastBanMessage(ban);
+        api.ban(ban).thenAccept((object) -> {
+            broadcastBanMessage(ban);
+        });
+
     }
 }

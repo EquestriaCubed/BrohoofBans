@@ -1,6 +1,10 @@
 package com.brohoof.brohoofbans.command;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.sweetiebelle.lib.SweetieLib;
 
@@ -19,25 +23,27 @@ public class BanInfoCommand extends AbstractCommand {
         this.converter = converter;
     }
 
-    public boolean execute(CommandSender sender, Ban ban, boolean wantsFullInfo) {
-        if (wantsFullInfo) {
-            if (sender.hasPermission("brohoofbans.baninfo.admin")) {
-                sendFullData(sender, ban);
-                return true;
-            }
-            sender.sendMessage(SweetieLib.NO_PERMISSION);
-            return true;
-        }
-        if (sender.hasPermission("brohoofbans.baninfo")) {
-            sendPartialData(sender, ban);
-            return true;
-        }
-        sender.sendMessage(SweetieLib.NO_PERMISSION);
-        return true;
-    }
-
-    public boolean execute(CommandSender sender, String playerName) {
-        sender.sendMessage(ChatColor.YELLOW + playerName + " is " + ChatColor.RED + "not" + ChatColor.YELLOW + " banned.");
+    public boolean execute(CommandSender sender, OfflinePlayer player, boolean wantsFullInfo) {
+        CompletableFuture<Optional<Ban>> future = this.getBan(player);
+        future.thenAccept((ban) -> {
+            if (ban.isPresent()) {
+                if (wantsFullInfo) {
+                    if (sender.hasPermission("brohoofbans.baninfo.admin")) {
+                        sendFullData(sender, ban.get());
+                        return;
+                    }
+                    sender.sendMessage(SweetieLib.NO_PERMISSION);
+                    return;
+                }
+                if (sender.hasPermission("brohoofbans.baninfo")) {
+                    sendPartialData(sender, ban.get());
+                    return;
+                }
+                sender.sendMessage(SweetieLib.NO_PERMISSION);
+                return;
+            } else
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + " is " + ChatColor.RED + "not" + ChatColor.YELLOW + " banned.");
+        });
         return true;
     }
 

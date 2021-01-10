@@ -2,9 +2,12 @@ package com.brohoof.brohoofbans.command;
 
 import java.net.InetSocketAddress;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import com.brohoof.brohoofbans.API;
@@ -40,4 +43,9 @@ public abstract class AbstractCommand {
     protected String getIP(InetSocketAddress address) {
         return Objects.requireNonNull(address.getAddress().getHostAddress());
     }
+    
+    protected CompletableFuture<Optional<Ban>> getBan(OfflinePlayer player) {
+        return api.getBan(player.getUniqueId());
+    }
+    
 }

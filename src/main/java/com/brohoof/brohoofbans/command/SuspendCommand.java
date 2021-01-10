@@ -51,7 +51,8 @@ public class SuspendCommand extends AbstractCommand {
 
     private void saveBan(Ban ban) {
         plugin.getLogger().info(ban.toString());
-        api.ban(ban);
-        broadcastBanMessage(ban);
+        api.ban(ban).thenAccept((object) -> {
+            broadcastBanMessage(ban);
+        });
     }
 }

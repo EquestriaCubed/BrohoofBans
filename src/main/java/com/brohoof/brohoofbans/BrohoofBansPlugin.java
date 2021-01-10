@@ -15,6 +15,7 @@ public class BrohoofBansPlugin extends JavaPlugin {
     private ExpireConverter converter;
     private Data data;
     private Settings settings;
+    private Scheduler scheduler;
     private static API api;
 
     public static API getAPI() {
@@ -35,11 +36,13 @@ public class BrohoofBansPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        scheduler.shutdown();
     }
 
     @Override
     public void onEnable() {
         converter = new ExpireConverter();
+        scheduler = new Scheduler(this);
         settings = new Settings(this);
         try {
             data = new Data(this, settings, SweetieLib.getPlugin().getConnection());
@@ -54,6 +57,6 @@ public class BrohoofBansPlugin extends JavaPlugin {
         getCommand("unban").setExecutor(new UnbanCommandHandler(this, api, settings));
         getCommand("suspend").setExecutor(new SuspendCommandHandler(this, api, settings));
         getCommand("brohoofbans").setExecutor(new CoreCommandHandler(this, api, settings));
-        getServer().getPluginManager().registerEvents(new EventManager(api, data, converter, settings), this);
+        getServer().getPluginManager().registerEvents(new EventManager(api, converter, settings), this);
     }
 }
