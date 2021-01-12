@@ -37,15 +37,9 @@ public class BanCommand extends AbstractCommand {
             ban = new Ban(victim.getUniqueId(), ((OfflinePlayer) sender).getUniqueId(), victim.getName(), sender.getName(), victimAddress, getIP(((Player) sender).getAddress()), expires, reason, false);
         else
             ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), SweetieLib.CONSOLE_NAME, victimAddress, "127.0.0.1", expires, reason, false);
-
-        saveBan(ban);
-    }
-
-    private void saveBan(Ban ban) {
         plugin.getLogger().info(ban.toString());
         api.ban(ban).thenAccept((object) -> {
             broadcastBanMessage(ban);
         });
-
     }
 }
