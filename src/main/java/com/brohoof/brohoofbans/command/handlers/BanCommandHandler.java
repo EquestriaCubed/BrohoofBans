@@ -26,7 +26,8 @@ public class BanCommandHandler extends AbstractCommandHandler {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("ban")) {
-            // Format = /ban [-t] [time] playerName | UUID reason... args[0 OR 1] is the name or UUID, other args are reason
+            // Format = /ban [-t] [time] playerName | UUID reason... args[0 OR 1] is the
+            // name or UUID, other args are reason
             if (args.length < 2)
                 return false;
             Boolean isTemporary = false;
@@ -44,19 +45,7 @@ public class BanCommandHandler extends AbstractCommandHandler {
             // The player is online.
             OfflinePlayer victim = getPlayer(args[isTemporary ? 2 : 0]);
             String reason = getReason(args, isTemporary);
-            if (victim instanceof Player) {
-                if (sender instanceof Player)
-                    // Sender is a Player
-                    return banCommand.execute((Player) sender, (Player) victim, expires, reason);
-                // It's console
-                return banCommand.execute(victim, expires, reason);
-            }
-            // Offline player
-            if (sender instanceof Player)
-                // Sender is a Player
-                return banCommand.execute((Player) sender, victim, expires, reason);
-            // It's console
-            return banCommand.execute(victim, expires, reason);
+            return banCommand.execute((Player) sender, (Player) victim, expires, reason);
         }
         return false;
     }

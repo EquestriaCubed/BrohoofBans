@@ -1,6 +1,7 @@
 package com.brohoof.brohoofbans.command;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.sweetiebelle.lib.SweetieLib;
 
@@ -15,38 +16,29 @@ public class BanCommand extends AbstractCommand {
         super(plugin, api, settings);
     }
 
-    public boolean execute(OfflinePlayer victim, String expires, String reason) {
-        Ban ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), SweetieLib.CONSOLE_NAME, "NULL", "127.0.0.1", expires, reason, false);
-        saveBan(ban);
-        return true;
-    }
-
-    public boolean execute(Player sender, OfflinePlayer victim, String expires, String reason) {
+    public boolean execute(CommandSender sender, OfflinePlayer victim, String expires, String reason) {
         if (!sender.hasPermission("brohoofbans.ban")) {
             sender.sendMessage(SweetieLib.NO_PERMISSION);
             return true;
         }
-        Ban ban = new Ban(victim.getUniqueId(), sender.getUniqueId(), victim.getName(), sender.getName(), "NULL", getIP(sender.getAddress()), expires, reason, false);
-        saveBan(ban);
+        ban(victim, sender, expires, reason);
         return true;
     }
 
-    public boolean execute(Player sender, Player victim, String expires, String reason) {
-        if (!sender.hasPermission("brohoofbans.ban")) {
-            sender.sendMessage(SweetieLib.NO_PERMISSION);
-            return true;
-        }
-        Ban ban = new Ban(victim.getUniqueId(), sender.getUniqueId(), victim.getName(), sender.getName(), getIP(victim.getAddress()), getIP(sender.getAddress()), expires, reason, false);
-        victim.kickPlayer("You are banned for:\n" + reason);
-        saveBan(ban);
-        return true;
-    }
+    private void ban(OfflinePlayer victim, CommandSender sender, String expires, String reason) {
+        String victimAddress;
+        if (victim instanceof Player) {
+            victimAddress = getIP(((Player) victim).getAddress());
+            ((Player) victim).kickPlayer("You are banned for:\n" + reason);
+        } else
+            victimAddress = "NULL";
+        Ban ban;
+        if (sender instanceof Player)
+            ban = new Ban(victim.getUniqueId(), ((OfflinePlayer) sender).getUniqueId(), victim.getName(), sender.getName(), victimAddress, getIP(((Player) sender).getAddress()), expires, reason, false);
+        else
+            ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), SweetieLib.CONSOLE_NAME, victimAddress, "127.0.0.1", expires, reason, false);
 
-    public boolean execute(Player victim, String expires, String reason) {
-        Ban ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), SweetieLib.CONSOLE_NAME, getIP(victim.getAddress()), "127.0.0.1", expires, reason, false);
-        victim.kickPlayer("You are banned for:\n" + reason);
         saveBan(ban);
-        return true;
     }
 
     private void saveBan(Ban ban) {
