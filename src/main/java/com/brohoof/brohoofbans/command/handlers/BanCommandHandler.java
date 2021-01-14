@@ -4,8 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
 import com.brohoof.brohoofbans.ExpireConverter;
@@ -45,7 +43,7 @@ public class BanCommandHandler extends AbstractCommandHandler {
             // The player is online.
             OfflinePlayer victim = getPlayer(args[isTemporary ? 2 : 0]);
             String reason = getReason(args, isTemporary);
-            return banCommand.execute((Player) sender, (Player) victim, expires, reason);
+            return banCommand.execute(sender, victim, expires, reason);
         }
         return false;
     }
