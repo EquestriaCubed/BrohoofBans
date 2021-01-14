@@ -13,12 +13,10 @@ import com.brohoof.brohoofbans.command.BanCommand;
 public class BanCommandHandler extends AbstractCommandHandler {
 
     private BanCommand banCommand;
-    private ExpireConverter converter;
 
-    public BanCommandHandler(BrohoofBansPlugin plugin, API api, Settings settings, ExpireConverter converter) {
+    public BanCommandHandler(BrohoofBansPlugin plugin, API api, Settings settings) {
         super(api);
         banCommand = new BanCommand(plugin, api, settings);
-        this.converter = converter;
     }
 
     @Override
@@ -32,7 +30,7 @@ public class BanCommandHandler extends AbstractCommandHandler {
             String expires = "NEVER";
             if (args[0].equalsIgnoreCase("-t"))
                 try {
-                    expires = String.valueOf(converter.getExpires(args[1]));
+                    expires = String.valueOf(ExpireConverter.getExpires(args[1]));
                     isTemporary = true;
                 } catch (IllegalArgumentException e) {
                     sender.sendMessage(ChatColor.RED + "That is not a valid time format. " + ChatColor.WHITE + "1h-5m " + ChatColor.RED + "is a valid format.");

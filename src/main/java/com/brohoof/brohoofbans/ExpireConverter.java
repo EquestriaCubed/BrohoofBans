@@ -8,7 +8,7 @@ import java.util.TimeZone;
 
 public class ExpireConverter {
 
-    public long getExpires(String filter) throws IllegalArgumentException {
+    public static long getExpires(String filter) throws IllegalArgumentException {
         if (filter == null)
             return 0L;
         if (filter.equalsIgnoreCase("now"))
@@ -46,13 +46,13 @@ public class ExpireConverter {
 
     /**
      *
-     * @param time
+     * @param miliseconds
      *            time in seconds
      * @return a friendly string that says how much time remains until the param, and now
      */
-    public String getFriendlyTime(long time) {
-        time -= System.currentTimeMillis() / 1000;
-        double days = time / (double) 60 / 60 / 24;
+    public static String getFriendlyTime(long miliseconds) {
+        miliseconds -= System.currentTimeMillis() / 1000;
+        double days = miliseconds / (double) 60 / 60 / 24;
         double hours = (days - (int) days) * 60;
         double mins = (hours - (int) hours) * 60;
         int seconds = (int) ((mins - (int) mins) * 60);
@@ -62,15 +62,15 @@ public class ExpireConverter {
     /**
      * Gets a timestamp from a unix time.
      *
-     * @param time
+     * @param seconds
      *            in seconds
      * @return
      */
-    public String getTimeStamp(long time) {
+    public static String getTimeStamp(long seconds) {
         // SYSTEM TIME IN MILISECONDS
-        time *= 1000L;
+        seconds *= 1000L;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // the format of your date
         sdf.setTimeZone(TimeZone.getDefault()); // give a timezone reference for formating
-        return sdf.format(new Date(time));
+        return sdf.format(new Date(seconds));
     }
 }

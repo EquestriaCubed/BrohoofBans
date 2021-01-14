@@ -13,11 +13,10 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 class EventManager implements Listener {
 
     private API api;
-    private ExpireConverter c;
     private Settings s;
-    public EventManager(API api, ExpireConverter c, Settings s) {
+
+    public EventManager(API api, Settings s) {
         this.api = api;
-        this.c = c;
         this.s = s;
     }
 
@@ -40,7 +39,7 @@ class EventManager implements Listener {
                     pEvent.disallow(Result.KICK_BANNED, "You are banned for:\n" + b.getReason());
                     return;
                 }
-                pEvent.disallow(Result.KICK_BANNED, "You are banned for:\n" + b.getReason() + ". \n" + ChatColor.RED + "Expires at " + ChatColor.WHITE + c.getFriendlyTime(Long.parseLong(b.getExpires())) + ".");
+                pEvent.disallow(Result.KICK_BANNED, "You are banned for:\n" + b.getReason() + ". \n" + ChatColor.RED + "Expires at " + ChatColor.WHITE + ExpireConverter.getFriendlyTime(Long.parseLong(b.getExpires())) + ".");
                 return;
             }
         });

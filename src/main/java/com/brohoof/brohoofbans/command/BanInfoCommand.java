@@ -16,11 +16,9 @@ import com.brohoof.brohoofbans.Settings;
 
 public class BanInfoCommand extends AbstractCommand {
 
-    private ExpireConverter converter;
 
-    public BanInfoCommand(BrohoofBansPlugin plugin, API api, ExpireConverter converter, Settings settings) {
+    public BanInfoCommand(BrohoofBansPlugin plugin, API api, Settings settings) {
         super(plugin, api, settings);
-        this.converter = converter;
     }
 
     public boolean execute(CommandSender sender, OfflinePlayer player, boolean wantsFullInfo) {
@@ -55,7 +53,7 @@ public class BanInfoCommand extends AbstractCommand {
         if (ban.getExpires().equals("NEVER"))
             sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban does " + ChatColor.RED + "not " + ChatColor.YELLOW + "expire.");
         else
-            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + converter.getFriendlyTime(Long.parseLong(ban.getExpires())));
+            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + ExpireConverter.getFriendlyTime(Long.parseLong(ban.getExpires())));
     }
 
     private void sendFullData(CommandSender sender, Ban ban) {
@@ -79,7 +77,7 @@ public class BanInfoCommand extends AbstractCommand {
         if (ban.getExpires().equalsIgnoreCase("NEVER"))
             sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban does " + ChatColor.RED + "not " + ChatColor.YELLOW + "expire.");
         else
-            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + converter.getFriendlyTime(Long.parseLong(ban.getExpires())));
+            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + ExpireConverter.getFriendlyTime(Long.parseLong(ban.getExpires())));
     }
 
     private void sendPartialData(CommandSender sender, Ban ban) {

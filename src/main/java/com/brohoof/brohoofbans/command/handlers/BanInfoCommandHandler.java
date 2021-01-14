@@ -13,9 +13,9 @@ public class BanInfoCommandHandler extends AbstractCommandHandler {
 
     private BanInfoCommand banInfoCommand;
 
-    public BanInfoCommandHandler(BrohoofBansPlugin plugin, API api, Settings settings, ExpireConverter converter) {
+    public BanInfoCommandHandler(BrohoofBansPlugin plugin, API api, Settings settings) {
         super(api);
-        banInfoCommand = new BanInfoCommand(plugin, api, converter, settings);
+        banInfoCommand = new BanInfoCommand(plugin, api, settings);
     }
 
     @Override
