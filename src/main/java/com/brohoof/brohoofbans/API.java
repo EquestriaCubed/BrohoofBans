@@ -31,12 +31,47 @@ public class API {
             return data.getBan(playerName).isPresent();
         });
     }
+    /**
+     * This method returns an {@link #isBanned(String)} without being wrapped in a
+     * {@link CompletableFuture}.
+     * <p>
+     * This will run on the same thread the moment this function is called.
+     * </p>
+     * 
+     * @deprecated this method is dangerous and bypasses sanity checks. You should
+     *             only use this if you know what you're doing.
+     * @param uuid the player's UUID
+     * @return if the UUID is banned
+     * 
+     */
+    @Deprecated
+    public boolean isBannedDangerous(String playerName) {
+        return data.getBan(playerName).isPresent();
+    }
 
     public CompletableFuture<Boolean> isBanned(UUID playerUUID) {
         return Scheduler.makeFuture(() -> {
             return data.getBan(playerUUID).isPresent();
         });
 
+    }
+
+    /**
+     * This method returns an {@link #isBanned(UUID)} without being wrapped in a
+     * {@link CompletableFuture}.
+     * <p>
+     * This will run on the same thread the moment this function is called.
+     * </p>
+     * 
+     * @deprecated this method is dangerous and bypasses sanity checks. You should
+     *             only use this if you know what you're doing.
+     * @param uuid the player's UUID
+     * @return if the UUID is banned
+     * 
+     */
+    @Deprecated
+    public boolean isBannedDangerous(UUID playerUUID) {
+        return data.getBan(playerUUID).isPresent();
     }
 
     public CompletableFuture<Void> ban(Ban ban) {
