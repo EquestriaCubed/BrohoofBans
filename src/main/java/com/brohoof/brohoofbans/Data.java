@@ -45,8 +45,7 @@ class Data {
     /**
      * Method used to handle errors
      *
-     * @param e
-     *            Exception
+     * @param e Exception
      */
     private void error(Exception e) {
         if (s.stackTraces) {
@@ -73,7 +72,7 @@ class Data {
         String executorIP;
         String executorName;
         UUID executorUUID;
-        String expiresIn;
+        long expiresIn;
         String reason;
         String victimName;
         String victimIP;
@@ -85,7 +84,7 @@ class Data {
                 executorIP = rs.getString("executorIP");
                 executorName = rs.getString("executorName");
                 executorUUID = UUID.fromString(rs.getString("executorUUID"));
-                expiresIn = rs.getString("expires");
+                expiresIn = rs.getLong("expires");
                 reason = rs.getString("reason");
                 victimUUID = UUID.fromString(rs.getString("victimUUID"));
                 victimName = rs.getString("victimName");
@@ -105,7 +104,7 @@ class Data {
         String executorIP;
         String executorName;
         UUID executorUUID;
-        String expiresIn;
+        long expiresIn;
         String reason;
         String victimName;
         String victimIP;
@@ -117,7 +116,7 @@ class Data {
                 executorIP = rs.getString("executorIP");
                 executorName = rs.getString("executorName");
                 executorUUID = UUID.fromString(rs.getString("executorUUID"));
-                expiresIn = rs.getString("expires");
+                expiresIn = rs.getLong("expires");
                 reason = rs.getString("reason");
                 victimUUID = UUID.fromString(rs.getString("victimUUID"));
                 victimName = rs.getString("victimName");
@@ -142,7 +141,7 @@ class Data {
             update.setString(4, b.getExecutorName());
             update.setString(5, b.getExecutorIP());
             update.setBoolean(6, b.isSuspension());
-            update.setString(7, b.getExpires());
+            update.setLong(7, b.getExpires());
             update.setString(8, b.getReason());
             update.setString(9, b.getVictim().toString());
             update.executeUpdate();
@@ -162,7 +161,7 @@ class Data {
             update.setString(5, b.getExecutorName());
             update.setString(6, b.getExecutorIP());
             update.setBoolean(7, b.isSuspension());
-            update.setString(8, b.getExpires());
+            update.setLong(8, b.getExpires());
             update.setString(9, b.getReason());
             update.executeUpdate();
             update.close();
@@ -187,10 +186,19 @@ class Data {
         }
     }
 
-    void updateBans(Player victimOrExecutor) {
+    void updateBans(Player victimOrExecutor, String ip) {
         try {
-            connection.executeUpdate("UPDATE " + s.dbPrefix + "ban SET victimName = \"" + victimOrExecutor.getName() + "\" WHERE victimUUID = \"" + victimOrExecutor.getUniqueId().toString() + "\";");
-            connection.executeUpdate("UPDATE " + s.dbPrefix + "ban SET executorName = \"" + victimOrExecutor.getName() + "\" WHERE executorUUID = \"" + victimOrExecutor.getUniqueId().toString() + "\";");
+            PreparedStatement updateVictim = connection.getStatement(String.format("UPDATE %sban SET victimName = ?, victimIP = ? WHERE victimUUID = ?;", s.dbPrefix));
+            updateVictim.setString(1, victimOrExecutor.getName());
+            updateVictim.setString(2, ip);
+            updateVictim.setString(3, victimOrExecutor.getUniqueId().toString());
+            updateVictim.execute();
+
+            PreparedStatement updateExcutor = connection.getStatement(String.format("UPDATE %sban SET executorName = ?, executorIP = ? WHERE executorUUID = ?;", s.dbPrefix));
+            updateExcutor.setString(1, victimOrExecutor.getName());
+            updateExcutor.setString(2, ip);
+            updateExcutor.setString(3, victimOrExecutor.getUniqueId().toString());
+            updateExcutor.execute();
         } catch (SQLException e) {
             error(e);
         }

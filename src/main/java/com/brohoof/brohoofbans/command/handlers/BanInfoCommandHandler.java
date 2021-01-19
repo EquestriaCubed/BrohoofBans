@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 
 import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
-import com.brohoof.brohoofbans.ExpireConverter;
 import com.brohoof.brohoofbans.Settings;
 import com.brohoof.brohoofbans.command.BanInfoCommand;
 

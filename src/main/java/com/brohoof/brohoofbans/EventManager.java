@@ -26,8 +26,9 @@ class EventManager implements Listener {
         future.thenAccept((ban) -> {
             if (ban.isPresent()) {
                 Ban b = ban.get();
-                if (!b.getExpires().equalsIgnoreCase("NEVER"))
-                    if (Long.parseLong(b.getExpires()) - System.currentTimeMillis() <= 0) {
+                BrohoofBansPlugin.getStaticLogger().info(b.toString());
+                if (b.getExpires() != -1L)
+                    if (b.getExpires() - System.currentTimeMillis() <= 0) {
                         api.unban(b);
                         return;
                     }
@@ -35,11 +36,10 @@ class EventManager implements Listener {
                     pEvent.disallow(Result.KICK_BANNED, s.suspendReason);
                     return;
                 }
-                if (b.getExpires().equalsIgnoreCase("NEVER")) {
+                if (b.getExpires() != -1L)
+                    pEvent.disallow(Result.KICK_BANNED, "You are banned for:\n" + b.getReason() + ". \n" + ChatColor.RED + "Expires at " + ChatColor.WHITE + ExpireConverter.getFriendlyTime(b.getExpires() - System.currentTimeMillis()) + ".");
+                else
                     pEvent.disallow(Result.KICK_BANNED, "You are banned for:\n" + b.getReason());
-                    return;
-                }
-                pEvent.disallow(Result.KICK_BANNED, "You are banned for:\n" + b.getReason() + ". \n" + ChatColor.RED + "Expires at " + ChatColor.WHITE + ExpireConverter.getFriendlyTime(Long.parseLong(b.getExpires())) + ".");
                 return;
             }
         });
@@ -48,6 +48,8 @@ class EventManager implements Listener {
 
     @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
     public void updateInfo(PlayerLoginEvent pEvent) {
-        api.updateBan(pEvent.getPlayer());
+        api.updateBan(pEvent.getPlayer(), pEvent.getAddress().toString().split("/")[1]).thenAccept((object) -> {
+            BrohoofBansPlugin.getStaticLogger().info("Updated player info.");
+        });
     }
 }

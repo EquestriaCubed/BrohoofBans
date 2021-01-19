@@ -1,7 +1,5 @@
 package com.brohoof.brohoofbans.command;
 
-import java.net.InetSocketAddress;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,10 +36,6 @@ public abstract class AbstractCommand {
     protected void broadcastKickMessage(Player target, String reason) {
         if (settings.broadcastMessage)
             Bukkit.broadcastMessage(ChatColor.YELLOW + "Kicked " + target.getName() + " for " + reason);
-    }
-
-    protected String getIP(InetSocketAddress address) {
-        return Objects.requireNonNull(address.getAddress().getHostAddress());
     }
     
     protected CompletableFuture<Optional<Ban>> getBan(OfflinePlayer player) {

@@ -1,6 +1,9 @@
 package com.brohoof.brohoofbans.command;
 
+import java.util.UUID;
+
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.sweetiebelle.lib.SweetieLib;
 
@@ -15,44 +18,25 @@ public class SuspendCommand extends AbstractCommand {
         super(plugin, api, settings);
     }
 
-    public boolean execute(OfflinePlayer victim, String reason) {
-        Ban ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), "CONSOLE", "NULL", "127.0.0.1", "NEVER", reason, true);
-        saveBan(ban);
-        return true;
-    }
-
-    public boolean execute(Player sender, OfflinePlayer victim, String reason) {
+    public boolean execute(CommandSender sender, OfflinePlayer victim, String reason) {
         if (!sender.hasPermission("brohoofbans.suspend")) {
             sender.sendMessage(SweetieLib.NO_PERMISSION);
             return true;
         }
-        Ban ban = new Ban(victim.getUniqueId(), sender.getUniqueId(), victim.getName(), sender.getName(), "NULL", getIP(sender.getAddress()), "NEVER", reason, true);
-        saveBan(ban);
-        return true;
-    }
+        UUID victimUUID = victim.getUniqueId();
+        UUID executorUUID = (sender instanceof OfflinePlayer) ? ((OfflinePlayer) sender).getUniqueId() : SweetieLib.CONSOLE_UUID;
+        String victimName = victim.getName();
+        String executorName = (sender instanceof OfflinePlayer) ? ((OfflinePlayer) sender).getName() : SweetieLib.CONSOLE_NAME;
+        String victimIP = (victim instanceof Player) ? API.getAddress((Player) victim) : "NULL";
+        String executorIP = (sender instanceof Player) ? API.getAddress((Player) sender) : "127.0.0.1";
+        Ban ban = new Ban(victimUUID, executorUUID, victimName, executorName, victimIP, executorIP, -1, reason, true);
 
-    public boolean execute(Player sender, Player victim, String reason) {
-        if (!sender.hasPermission("brohoofbans.suspend")) {
-            sender.sendMessage(SweetieLib.NO_PERMISSION);
-            return true;
-        }
-        Ban ban = new Ban(victim.getUniqueId(), sender.getUniqueId(), victim.getName(), sender.getName(), getIP(victim.getAddress()), getIP(sender.getAddress()), "NEVER", reason, true);
-        victim.kickPlayer(settings.suspendReason);
-        saveBan(ban);
-        return true;
-    }
-
-    public boolean execute(Player victim, String reason) {
-        Ban ban = new Ban(victim.getUniqueId(), SweetieLib.CONSOLE_UUID, victim.getName(), "CONSOLE", getIP(victim.getAddress()), "127.0.0.1", "NEVER", reason, true);
-        victim.kickPlayer(settings.suspendReason);
-        saveBan(ban);
-        return true;
-    }
-
-    private void saveBan(Ban ban) {
+        if (victim instanceof Player)
+            ((Player) victim).kickPlayer(settings.suspendReason);
         plugin.getLogger().info(ban.toString());
         api.ban(ban).thenAccept((object) -> {
             broadcastBanMessage(ban);
         });
+        return true;
     }
 }

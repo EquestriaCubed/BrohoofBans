@@ -7,7 +7,7 @@ public class Ban {
     private String executorIP;
     private String executorName;
     private UUID executorUUID;
-    private String expiresIn;
+    private long expiresAt;
     private boolean isSuspension;
     private String reason;
     private String victimIP;
@@ -26,14 +26,14 @@ public class Ban {
      * @param reason
      * @param isSuspension
      */
-    public Ban(UUID victimUUID, UUID executorUUID, String victimName, String executorName, String victimIP, String executorIP, String expiresIn, String reason, boolean isSuspension) {
+    public Ban(UUID victimUUID, UUID executorUUID, String victimName, String executorName, String victimIP, String executorIP, long expiresAt, String reason, boolean isSuspension) {
         this.victimUUID = victimUUID;
         this.executorUUID = executorUUID;
         this.victimName = victimName;
         this.executorName = executorName;
         this.victimIP = victimIP;
         this.executorIP = executorIP;
-        this.expiresIn = expiresIn;
+        this.expiresAt = expiresAt;
         this.reason = reason;
         this.isSuspension = isSuspension;
     }
@@ -50,8 +50,8 @@ public class Ban {
         return executorName;
     }
 
-    public String getExpires() {
-        return expiresIn;
+    public long getExpires() {
+        return expiresAt;
     }
 
     public String getReason() {
@@ -76,6 +76,6 @@ public class Ban {
 
     @Override
     public String toString() {
-        return "BAN[VICTIM: {UUID = " + victimUUID.toString() + ",NAME = " + victimName + "} EXECUTOR: {UUID = " + executorUUID.toString() + ",NAME = " + executorName + "} REASON: {" + reason + "} EXPIRES: {" + expiresIn + "} SUSPENDED: {" + isSuspension + "}]";
+        return "BAN[VICTIM: {UUID = " + victimUUID.toString() + ",NAME = " + victimName + "} EXECUTOR: {UUID = " + executorUUID.toString() + ",NAME = " + executorName + "} REASON: {" + reason + "} EXPIRES: {" + expiresAt + "} SUSPENDED: {" + isSuspension + "}]";
     }
 }

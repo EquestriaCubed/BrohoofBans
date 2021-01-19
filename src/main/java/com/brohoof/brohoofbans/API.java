@@ -1,12 +1,23 @@
 package com.brohoof.brohoofbans;
 
+import java.net.InetSocketAddress;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.entity.Player;
 
+import com.google.common.base.Preconditions;
+
 public class API {
+    
+    public static String getAddress(Player player) {
+        Preconditions.checkNotNull(player);
+        InetSocketAddress address = player.getAddress();
+        if(address == null)
+            return "NULL";
+        return address.getAddress().getHostAddress();
+    }
 
     private Data data;
 
@@ -76,7 +87,7 @@ public class API {
 
     public CompletableFuture<Void> ban(Ban ban) {
         return Scheduler.makeFuture(() -> {
-            if (data.getBan(ban.getExecutor()).isPresent())
+            if (data.getBan(ban.getVictim()).isPresent())
                 data.saveBan(ban);
             else
                 data.createBan(ban);
@@ -89,9 +100,9 @@ public class API {
         });
     }
 
-    public CompletableFuture<Void> updateBan(Player victimOrExecutor) {
+    public CompletableFuture<Void> updateBan(Player victimOrExecutor, String ip) {
         return Scheduler.makeFuture(() -> {
-            data.updateBans(victimOrExecutor);
+            data.updateBans(victimOrExecutor, ip);
         });
     }
 }

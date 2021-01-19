@@ -8,6 +8,10 @@ import java.util.TimeZone;
 
 public class ExpireConverter {
 
+    private static final long MILLIS_IN_A_DAY = 86400000L;
+    private static final long MILLIS_IN_A_HOUR = 3600000L;
+    private static final long MILLIS_IN_A_MINUTE = 60000L;
+
     public static long getExpires(String filter) throws IllegalArgumentException {
         if (filter == null)
             return 0L;
@@ -36,7 +40,7 @@ public class ExpireConverter {
                 case 'y':
                     type = Calendar.YEAR;
                     break;
-                default :
+                default:
                     throw new IllegalArgumentException("Unknown date value specified");
             }
             cal.add(type, Integer.valueOf(str.substring(0, str.length() - 1)));
@@ -46,31 +50,30 @@ public class ExpireConverter {
 
     /**
      *
-     * @param miliseconds
-     *            time in seconds
-     * @return a friendly string that says how much time remains until the param, and now
+     * @param diff time in miliseconds
+     * @return a friendly string that says how much time remains until the param,
+     *         and now
      */
-    public static String getFriendlyTime(long miliseconds) {
-        miliseconds -= System.currentTimeMillis() / 1000;
-        double days = miliseconds / (double) 60 / 60 / 24;
-        double hours = (days - (int) days) * 60;
-        double mins = (hours - (int) hours) * 60;
-        int seconds = (int) ((mins - (int) mins) * 60);
-        return (int) days + "d-" + (int) hours + "h-" + (int) mins + "m-" + seconds + "s";
+    public static String getFriendlyTime(long diff) {
+        int days = (int) (diff / MILLIS_IN_A_DAY);
+        diff -= days * MILLIS_IN_A_DAY;
+        int hours = (int) (diff / MILLIS_IN_A_HOUR);
+        diff -= hours * MILLIS_IN_A_HOUR;
+        int mins = (int) (diff / MILLIS_IN_A_MINUTE);
+        diff -= mins * MILLIS_IN_A_MINUTE;
+        int seconds = (int) (diff / 1000);
+        return days + "d-" + hours + "h-" + mins + "m-" + seconds + "s";
     }
 
     /**
      * Gets a timestamp from a unix time.
      *
-     * @param seconds
-     *            in seconds
+     * @param seconds in seconds
      * @return
      */
-    public static String getTimeStamp(long seconds) {
-        // SYSTEM TIME IN MILISECONDS
-        seconds *= 1000L;
+    public static String getTimeStamp(long miliseconds) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // the format of your date
         sdf.setTimeZone(TimeZone.getDefault()); // give a timezone reference for formating
-        return sdf.format(new Date(seconds));
+        return sdf.format(new Date(miliseconds));
     }
 }

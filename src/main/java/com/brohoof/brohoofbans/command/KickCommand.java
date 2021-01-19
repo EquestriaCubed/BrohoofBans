@@ -1,6 +1,7 @@
 package com.brohoof.brohoofbans.command;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.sweetiebelle.lib.SweetieLib;
@@ -15,16 +16,16 @@ public class KickCommand extends AbstractCommand {
         super(plugin, api, settings);
     }
 
-    public boolean execute(CommandSender sender) {
-        sender.sendMessage(ChatColor.RED + "That player is not online.");
-        return true;
-    }
-
-    public boolean execute(CommandSender sender, Player target, String reason) {
+    public boolean execute(CommandSender sender, OfflinePlayer oTarget, String reason) {
         if (!sender.hasPermission("brohoofbans.kick")) {
             sender.sendMessage(SweetieLib.NO_PERMISSION);
             return true;
         }
+        if (!(oTarget instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "That player is not online.");
+            return true;
+        }
+        Player target = (Player) oTarget;
         target.kickPlayer(reason);
         broadcastKickMessage(target, reason);
         if (sender instanceof Player)

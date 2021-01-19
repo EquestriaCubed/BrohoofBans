@@ -27,10 +27,10 @@ public class BanCommandHandler extends AbstractCommandHandler {
             if (args.length < 2)
                 return false;
             Boolean isTemporary = false;
-            String expires = "NEVER";
+            long expires = -1;
             if (args[0].equalsIgnoreCase("-t"))
                 try {
-                    expires = String.valueOf(ExpireConverter.getExpires(args[1]));
+                    expires = ExpireConverter.getExpires(args[1]) + System.currentTimeMillis();
                     isTemporary = true;
                 } catch (IllegalArgumentException e) {
                     sender.sendMessage(ChatColor.RED + "That is not a valid time format. " + ChatColor.WHITE + "1h-5m " + ChatColor.RED + "is a valid format.");

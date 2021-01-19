@@ -3,8 +3,6 @@ package com.brohoof.brohoofbans.command.handlers;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;
 import com.brohoof.brohoofbans.Settings;
@@ -22,14 +20,14 @@ public class KickCommandHandler extends AbstractCommandHandler {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("kick")) {
-            // Format = /kick playerName | UUID reason... args[0 OR 1] is the name or UUID, other args are reason
+            // Format = /kick playerName | UUID reason... args[0 OR 1] is the name or UUID,
+            // other args are reason
             if (args.length < 2)
                 return false;
             OfflinePlayer target = getPlayer(args[0]);
             final String reason = getReason(args, false);
-            if (target instanceof Player)
-                return kickCommand.execute(sender, (Player) target, reason);
-            return kickCommand.execute(sender);
+            return kickCommand.execute(sender, target, reason);
+
         }
         return false;
     }
