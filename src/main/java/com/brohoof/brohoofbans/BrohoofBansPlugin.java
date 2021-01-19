@@ -1,7 +1,5 @@
 package com.brohoof.brohoofbans;
 
-import java.util.logging.Logger;
-
 import org.bukkit.plugin.java.JavaPlugin;
 import org.sweetiebelle.lib.SweetieLib;
 import com.brohoof.brohoofbans.command.handlers.BanCommandHandler;
@@ -19,13 +17,9 @@ public class BrohoofBansPlugin extends JavaPlugin {
     private Settings settings;
     private Scheduler scheduler;
     private static API api;
-    private static BrohoofBansPlugin plugin;
 
     public static API getAPI() {
         return api;
-    }
-    public static Logger getStaticLogger() {
-        return plugin.getLogger();
     }
 
     public ExpireConverter getConverter() {
@@ -47,7 +41,6 @@ public class BrohoofBansPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        plugin = this;
         scheduler = new Scheduler(this);
         settings = new Settings(this);
         try {

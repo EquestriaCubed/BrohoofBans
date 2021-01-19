@@ -26,7 +26,6 @@ class EventManager implements Listener {
         future.thenAccept((ban) -> {
             if (ban.isPresent()) {
                 Ban b = ban.get();
-                BrohoofBansPlugin.getStaticLogger().info(b.toString());
                 if (b.getExpires() != -1L)
                     if (b.getExpires() - System.currentTimeMillis() <= 0) {
                         api.unban(b);
@@ -48,8 +47,6 @@ class EventManager implements Listener {
 
     @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
     public void updateInfo(PlayerLoginEvent pEvent) {
-        api.updateBan(pEvent.getPlayer(), pEvent.getAddress().toString().split("/")[1]).thenAccept((object) -> {
-            BrohoofBansPlugin.getStaticLogger().info("Updated player info.");
-        });
+        api.updateBan(pEvent.getPlayer(), pEvent.getAddress().toString().split("/")[1]);
     }
 }
