@@ -68,7 +68,7 @@ public class BanInfoCommand extends AbstractCommand {
         if (ban.getExpires() == -1)
             sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban does " + ChatColor.RED + "not " + ChatColor.YELLOW + "expire.");
         else
-            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + ExpireConverter.getTimeStamp(ban.getExpires() - System.currentTimeMillis()));
+            sender.sendMessage(ChatColor.YELLOW + "The Victim is banned for " + ChatColor.WHITE + ban.getReason() + ChatColor.YELLOW + ". This ban expires at " + ChatColor.WHITE + ExpireConverter.getFriendlyTime(ban.getExpires() - System.currentTimeMillis()));
     }
 
     private void sendPartialData(CommandSender sender, Ban ban) {
