@@ -1,7 +1,7 @@
 package com.brohoof.brohoofbans;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.sweetiebelle.lib.SweetieLib;
+import net.shonx.lib.SweetieLib;
 import com.brohoof.brohoofbans.command.handlers.BanCommandHandler;
 import com.brohoof.brohoofbans.command.handlers.BanInfoCommandHandler;
 import com.brohoof.brohoofbans.command.handlers.CoreCommandHandler;

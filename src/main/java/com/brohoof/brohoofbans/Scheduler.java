@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-import org.sweetiebelle.lib.scheduler.SchedulerAdapter;
+import net.shonx.lib.scheduler.SchedulerAdapter;
 
 public class Scheduler {
 

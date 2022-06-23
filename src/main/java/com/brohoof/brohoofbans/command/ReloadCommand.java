@@ -2,7 +2,7 @@ package com.brohoof.brohoofbans.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.sweetiebelle.lib.SweetieLib;
+import net.shonx.lib.SweetieLib;
 
 import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.BrohoofBansPlugin;

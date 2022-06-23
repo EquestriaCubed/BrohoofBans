@@ -3,7 +3,7 @@ package com.brohoof.brohoofbans.command;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.sweetiebelle.lib.SweetieLib;
+import net.shonx.lib.SweetieLib;
 
 import com.brohoof.brohoofbans.API;
 import com.brohoof.brohoofbans.Ban;

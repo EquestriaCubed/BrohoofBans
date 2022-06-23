@@ -1,6 +1,6 @@
 name: BrohoofBans
 main: com.brohoof.brohoofbans.BrohoofBansPlugin
-version: $version
+version: @VERSION@
 authors: [SweetieBelle]
 depend: [SweetieLib]
 loadbefore: [Vault]
